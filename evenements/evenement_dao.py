@@ -4,7 +4,6 @@ from flask_bcrypt import Bcrypt
 #from evenement import Evenement
 
 
-
 class EvenementDao:
     connexion = database.connect_db()
     cursor = connexion.cursor()

@@ -25,7 +25,7 @@ class ReservationDao:
     
     @classmethod
     def reserver_place(cls,reservation:Reservation):
-        sql = "INSERT INTO reservations (nom, date, place,id_evenement,id_user,id_reservation,statut) VALUES (%s,%s, %s, %s,%s,%s,%s)"
+        sql = "INSERT INTO reservation (nom, date, place,id_evenement,id_user,id_reservation,statut) VALUES (%s,%s, %s, %s,%s,%s,%s)"
         params = (reservation.nom, reservation.date,reservation.place, reservation.id_evenement,reservation.id_user,reservation.id_reservation, reservation.statut)   
         try:
             ReservationDao.cursor.execute(sql, params)
@@ -39,7 +39,7 @@ class ReservationDao:
     @classmethod
     def confirmer_reservation(cls, id_reservation):
         # Mettre à jour le statut de la réservation dans la base de données
-        sql = "UPDATE reservations SET statut = %s WHERE id = %s"
+        sql = "UPDATE reservation SET statut = %s WHERE id = %s"
         params = (ReservationStatut.CONFIRME.value, id_reservation)
         try:
             ReservationDao.cursor.execute(sql, params)
@@ -52,7 +52,7 @@ class ReservationDao:
         
     @classmethod
     def places_reservees(cls):
-        sql = "SELECT SUM(place) FROM reservations"
+        sql = "SELECT SUM(place) FROM reservation"
         try:
             ReservationDao.cursor.execute(sql)
             nombre_reservations = ReservationDao.cursor.fetchone()[0]
@@ -76,7 +76,7 @@ class ReservationDao:
 
     @classmethod
     def filtrer_reservations_par_personne(cls,nom):
-        sql = """SELECT *FROM reservations WHERE nom = %s"""
+        sql = """SELECT *FROM reservation WHERE nom = %s"""
         try:
             ReservationDao.cursor.execute(sql,(nom,))
             reservations = ReservationDao.cursor.fetchall()
@@ -89,7 +89,7 @@ class ReservationDao:
 
     @classmethod    
     def belongs_to_user(cls, id_reservation, id_user):
-        sql = "SELECT COUNT(*) FROM reservations WHERE id_reservation = %s AND id_user = %s"
+        sql = "SELECT COUNT(*) FROM reservation WHERE id_reservation = %s AND id_user = %s"
         params = (id_reservation, id_user)
         try:
             cls.cursor.execute(sql, params)
@@ -102,7 +102,7 @@ class ReservationDao:
 
     @classmethod
     def annuler_reservation(cls,id):
-        sql = """DELETE FROM reservations WHERE id = %s"""
+        sql = """DELETE FROM reservation WHERE id = %s"""
         try:
             ReservationDao.cursor.execute(sql, (id,))
             ReservationDao.connexion.commit()

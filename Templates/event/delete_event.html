@@ -1,8 +1,9 @@
 {% extends 'admin.html' %}
 
-{% block title %} Supprimer un évènement {% endblock %}
+{% block title %}  {% endblock %}
 {% block content %}
 <br>
+
 <h1>Veuillez remplir ces champs pour supprimer un évènement.</h1>
 
     {% if message=='error'%}
@@ -14,17 +15,33 @@
       </p>
     
     {% elif message=='success' %}
-     <p class="alert alert-success">L'évènement avec l'identification {{evenement.id_evenement}} a bien été suprime !</p>
+     <p class="alert alert-success">L'évènement {{evenement.nom}} avec l'identification {{evenement.id_evenement}} a bien été suprime !</p>
     {% endif %}
 
-    <form action="{{url_for('delete_event')}}" method="post" class = "container">
-     
+<form action="{{url_for('delete_event')}}" method="post" class = "container">
+      <div class="form-floating mb-3">
+          <input name = 'nom' type="text" class="form-control" id="Nom" placeholder="">
+          <label for="nom">Nom </label>
+        </div>
         <div class="form-floating mb-3">
-          <input  name = 'id_evenement' type="text" class="form-control" id="Id_evenement" placeholder="">
-          <label for="id_evenement">ID de l'evenement</label>
+          <input name = 'date' type="text" class="form-control" id="Date" placeholder="">
+          <label for="date">Year-Month-Date</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input  name='emplacement' type="text" class="form-control" id="Emplacement" placeholder="">
+          <label for="emplacement">Emplacement</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input  name = 'prix' type="text" class="form-control" id="Prix" placeholder="">
+          <label for="prix">Prix</label>
+        </div>
+        <div class="form-floating mb-3">
+          <input  name = 'id' type="text" class="form-control" id="ID" placeholder="">
+          <label for="id">ID de l'évènement</label>
         </div>
         
       <input type="submit" value="Delete" class = "btn btn-success">
   </form>
-    
-{% endblock %}
+  
+  {% endblock %}
+

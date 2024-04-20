@@ -17,23 +17,8 @@
      <p class="alert alert-success">Le paiement pour la réservation {{reservation.id_reservation}} s'est bien effectué !</p>
     {% endif %}
 
-    <style>
-        /* Style pour centrer le formulaire */
-        .center-div {
-            margin: 0 auto; /* Marge automatique sur les côtés pour centrer le contenu */
-            max-width: 400px; /* Largeur maximale du formulaire */
-        }
-
-        /* Style pour l'image de fond */
-        body {
-            background-image: url(Static/images/avion-voyager-plane-scaled-e1652808397530.jpg); 
-            background-size: cover; 
-            background-position: center; 
-            height: 100vh; 
-            margin: 0; 
-            padding: 0; 
-        }
-    </style>
+    
+   
 <form action="{{url_for('paiement')}}" method="post" class = "container">
     <div class="form-floating mb-3">
         <input name = 'montant' type="text" class="form-control" id="Montant" placeholder="">

@@ -1,6 +1,6 @@
 {% extends 'default.html' %}
 
-{% block title %}  {% endblock %}
+{% block title %} Réserver une place {% endblock %}
 {% block content %}
 <br>
 
@@ -12,11 +12,10 @@
     
     {% elif message=='failure' %}
       <p class="alert alert-warning">Une erreur est survenue lors de la réservation,
-       veuillez vous assurer que tout les information sont exacte.
-      </p>
+       veuillez vous assurer que tout les information sont exacte.</p>
     
     {% elif message=='success' %}
-     <p class="alert alert-success"> {{reservation.nom}}  avec identification {{reservation.id_reservation}} a été réserver!</p>
+     <p class="alert alert-success"> La réservation pour {{reservation.nom}} avec identification {{reservation.id_reservation}} a été réserver!</p>
     {% endif %}
 
 <form action="{{url_for('reservations')}}" method="post" class = "container">

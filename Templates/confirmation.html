@@ -1,5 +1,9 @@
 {% extends 'default.html' %}
 {% block title %} Confirmation {% endblock %}
+
+{% block content %}
+<br>
+
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -14,12 +18,21 @@
    
 </style>
 
-{% block content %}
-   
-    <h1>Confirmation de réservation</h1>
-    <p>Merci, {{user.nom_complet }}, votre réservation pour l'activité {{evenement.nom}} le {{evenement.date}} a été confirmée.</p>
-    <p>Un email de confirmation a été envoyé à {{user.email}}.</p>
+<h1>Confirmation de réservation</h1>
 
-</body>
+    {% if message=='error'%}
+      <p class="alert alert-danger">Tous les champs doivent être remplie.</p>
+    
+    {% elif message=='failure' %}
+      <p class="alert alert-warning">Une erreur est survenue lors de la confirmation,
+       veuillez vous assurer que tout les information sont exacte.
+      </p>
+    
+    {% elif message=='success' %}
+     <p class="alert alert-success"> Merci, {{user.nom_complet }}, votre réservation pour l'activité {{evenement.nom}} le {{evenement.date}} a été confirmée.
+     Un email de confirmation a été envoyé à {{user.email}}. </p>
+
+    {% endif %}
+
 
 {% endblock %}
