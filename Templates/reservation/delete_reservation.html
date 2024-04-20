@@ -17,16 +17,19 @@
      <p class="alert alert-success">L'évènement {{reservation.nom}} a bien été suprimé !</p>
     {% endif %}
 
-<form action="{{url_for('add_event')}}" method="post" class = "container">
-    
-      <div class="form-floating mb-3">
-        <input  name = 'id_reservation' type="text" class="form-control" id="id_reservation" placeholder="">
-        <label for="id_reservation">ID de la reservation</label>
-      </div>
-      <div class="form-floating mb-3">
-        <input  name = 'id_user' type="text" class="form-control" id="id_user" placeholder="">
-        <label for="id_user">ID de l'utilisateur</label>
-      </div>
+<form action="{{url_for('delete_reservation')}}" method="post" class = "container">
+    <div class="form-floating mb-3">
+      <input  name = 'id_evenement' type="text" class="form-control" id="id_evenement" placeholder="">
+      <label for="id_evenement">ID de l'evenement</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input  name = 'id_user' type="text" class="form-control" id="id_user" placeholder="">
+      <label for="id_user">ID de l'utilisateur</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input  name = 'id_reservation' type="text" class="form-control" id="id_reservation" placeholder="">
+      <label for="id_reservation">ID de la reservation</label>
+    </div>
       
     <input type="submit" value="Delete" class = "btn btn-success">
 </form>

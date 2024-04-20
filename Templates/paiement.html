@@ -21,9 +21,7 @@
    
 <form action="{{url_for('paiement')}}" method="post" class = "container">
     <div class="form-floating mb-3">
-        <input name = 'montant' type="text" class="form-control" id="Montant" placeholder="">
-        <label for="montant">Montant </label>
-      </div>
+        <input type="hidden" name="montant" value="{{ montant }}">
       <div class="form-floating mb-3">
         <input  name='mode_paiement' type="text" class="form-control" id="Mode_paiement" placeholder="">
         <label for="mode_paiement">Mode de paiement</label>

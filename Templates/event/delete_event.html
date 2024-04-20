@@ -11,37 +11,36 @@
     
     {% elif message=='failure' %}
       <p class="alert alert-warning">Une erreur est survenue lors de l'eradication de l'évènement,
-       veuillez vous assurer que tout les information sont exacte.
-      </p>
+       veuillez vous assurer que tout les information sont exacte.</p>
     
     {% elif message=='success' %}
      <p class="alert alert-success">L'évènement {{evenement.nom}} avec l'identification {{evenement.id_evenement}} a bien été suprime !</p>
     {% endif %}
 
 <form action="{{url_for('delete_event')}}" method="post" class = "container">
+    <div class="form-floating mb-3">
+        <input name = 'nom' type="text" class="form-control" id="Nom" placeholder="">
+        <label for="nom">Nom </label>
+      </div>
       <div class="form-floating mb-3">
-          <input name = 'nom' type="text" class="form-control" id="Nom" placeholder="">
-          <label for="nom">Nom </label>
-        </div>
-        <div class="form-floating mb-3">
-          <input name = 'date' type="text" class="form-control" id="Date" placeholder="">
-          <label for="date">Year-Month-Date</label>
-        </div>
-        <div class="form-floating mb-3">
-          <input  name='emplacement' type="text" class="form-control" id="Emplacement" placeholder="">
-          <label for="emplacement">Emplacement</label>
-        </div>
-        <div class="form-floating mb-3">
-          <input  name = 'prix' type="text" class="form-control" id="Prix" placeholder="">
-          <label for="prix">Prix</label>
-        </div>
-        <div class="form-floating mb-3">
-          <input  name = 'id' type="text" class="form-control" id="ID" placeholder="">
-          <label for="id">ID de l'évènement</label>
-        </div>
+        <input name = 'date' type="text" class="form-control" id="Date" placeholder="">
+        <label for="date">Year-Month-Date</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input  name='emplacement' type="text" class="form-control" id="Emplacement" placeholder="">
+        <label for="emplacement">Lieu</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input  name = 'prix' type="text" class="form-control" id="Prix" placeholder="">
+        <label for="prix">Prix</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input  name = 'id_evenement' type="text" class="form-control" id="Id_evenement" placeholder="">
+        <label for="id_evenement">ID de l'évènement</label>
+      </div>
         
-      <input type="submit" value="Delete" class = "btn btn-success">
-  </form>
+    <input type="submit" value="Delete" class = "btn btn-success">
+</form>
   
-  {% endblock %}
+{% endblock %}
 

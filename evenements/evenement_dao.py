@@ -52,9 +52,11 @@ class EvenementDao:
             EvenementDao.cursor.execute(sql,(id_evenement,))
             EvenementDao.connexion.commit()
             message= "L'événement a été supprimé avec succès."
+            success=True
         except Exception as error :
             message = "Erreur lors de la suppression de l'évenement"
-        return message
+            success=False
+        return success,message
 
     @classmethod
     def recuperer_evenement_par_id(cls, id_evenement):

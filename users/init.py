@@ -1,6 +1,6 @@
 from user_dao import UserDao
 from user import User
-import bcrypt
+
 
 """
 (message,user) =UserDao.get_one('Diallo123')
@@ -17,6 +17,8 @@ if bcrypt.checkpw(password, password_hash_db):
     print("Password is correct")
 else:
     print("Password is incorrect")
+
+    
 """
 
 user= UserDao.get_user_role('Sam4Beru')

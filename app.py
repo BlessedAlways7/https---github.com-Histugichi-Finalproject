@@ -143,7 +143,7 @@ def delete_event():
             message="error"
         else:
             evenement = Evenement(nom, date,emplacement,prix,id_evenement)
-            message = EvenementDao.supprimer_evenement(evenement)
+            message = EvenementDao.supprimer_evenement(id_evenement)
         print(message)
     return render_template('event/delete_event.html', message=message, evenement=evenement)
 
@@ -155,29 +155,27 @@ def liste_reservation():
     message, reservations=ReservationDao.get_all()
     return render_template('reservation/liste_reservation.html', message=message, reservations=reservations)
 
-
 @app.route('/delete_reservation', methods= ['POST', 'GET'])
 def delete_reservation():
     if 'username' not in session and "is_admin" not in session:
         return redirect(url_for('login'))
     message=None
     reservation=None
-
+    
     if request.method == 'POST':
-        nom = request.form.get('nom')
-        id_user = request.form.get('id')
-        id_reservation =request.form ['id_reservation']
-        
-        if nom==""  or id_user=="" or id_reservation==""  :
+        id_evenement=request.form['id_evenement']
+        id_user= request.form['id_user']
+        id_reservation =request.form ['id_reservation']  
+ 
+        if  id_evenement=="" or id_user=="" or id_reservation=="":
             message="error"
         else:
-            user_id=session.get('user_id')
-            if ReservationDao.belongs_to_user(id_user,id_reservation):
-                message=ReservationDao.annuler_reservation(id)
-            else:
-                message = "Vous etes pas authorized a annuler cette reservation"
+            reservation=Reservation(nom=None, date=None,place=None,id_evenement=id_evenement,id_user=id_user,id_reservation=id_reservation,statut=None)
+            message=ReservationDao.annuler_reservation(id_evenement,id_user,id_reservation)
         print(message)
     return render_template('reservation/delete_reservation.html', message=message, reservation=reservation)
+
+
 
 @app.route('/statut')
 def statut():
@@ -198,19 +196,20 @@ def reservations():
 
     message=None
     reservation=None
+    id_evenement= request.args.get('id_evenement')
+    id_user= request.args.get('id_user')
 
     if request.method == 'POST':
         nom = request.form['nom']
         date = request.form['date']
         place = request.form['place']
-        id_evenement = request.form['id_evenement']
-        id_user = request.form['id_user']
         
-        if nom=="" or date=="" or place=="" or id_evenement=="" or id_user=="" :
+        
+        if nom=="" or date=="" or place=="" :
             message="error"
         else:
             id_reservation =1
-            statut = "Pending"
+            statut = "En attente"
             reservation = Reservation(nom, date, place,id_evenement,id_user,id_reservation,statut)
             message = ReservationDao.reserver_place(reservation)
             if message =='success':
@@ -223,14 +222,18 @@ def reservations():
 def historique():
     if 'username' not in session and "is_admin" not in session:
         return redirect(url_for('login'))
-    message, reservations = ReservationDao.belongs_to_user()
+    id_user=request.args.get('id_user')
+    message, reservations = ReservationDao.filtrer_reservations_id_user(id_user)
     return render_template('reservation/historique.html', message=message, reservations=reservations)
 
 @app.route('/confirmation')
-def confirmation(id_reservation):
+def confirmation():
+    id_reservation= request.args.get('id_reservation')
     message=ReservationDao.confirmer_reservation(id_reservation)
     if message== 'success':
-        return render_template('confirmation.html')
+        return redirect(url_for('confirmation'))
+    else:
+        return render_template('paiement.html',message=message)
 
 @app.route('/users')
 def users():
@@ -272,22 +275,26 @@ def add_user():
 @app.route('/paiement', methods=['POST','GET'])
 def paiement():
     message=None
-    paiement=None
-    
+    montant = request.args.get('montant')
+   
     if request.method == 'POST':
-        montant = request.form['montant']
+        
         mode_paiement= request.form['mode_paiement']
         numero_carte=request.form['numero_carte']
         date_expiration=request.form['date_expiration']
         cvv = request.form['cvv']
 
-        if montant=="" or mode_paiement=="" or numero_carte=="" or date_expiration=="" or cvv=="":
+        if  mode_paiement=="" or numero_carte=="" or date_expiration=="" or cvv=="":
             message="error"
         else:
             paiement= Paiement(montant,mode_paiement,numero_carte,date_expiration,cvv)
             message = PaiementDao.ajouter_paiement(paiement)
-        return redirect(url_for('confirmation'))
-    return render_template('paiement.html', message=message, paiement=paiement)
+            return redirect(url_for('confirmation'))
+        id_evenement = request.args.get('id_evenement')
+        evenement = EvenementDao.recuperer_evenement_par_id(id_evenement)
+    if evenement:
+        montant = evenement[4]
+    return render_template('paiement.html', message=message, paiement=paiement, montant=montant)
 
 
 if __name__ == "__main__":

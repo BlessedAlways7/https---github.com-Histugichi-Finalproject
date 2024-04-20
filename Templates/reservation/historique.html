@@ -3,7 +3,7 @@
 {% block title %} Historique {% endblock %}
 {% block content %}
 
-<h1>Historique des reservation</h1>
+<h1>Historique des réservations</h1>
 
 
     
@@ -13,9 +13,12 @@
                   
                   <th scope="col">Nom</th>
                   <th scope="col">Date</th>
-                  <th scope="col">Emplacement</th>
-                  <th scope="col">Prix</th>
-                  <th scope="col">ID</th>
+                  <th scope="col">Lieu</th>
+                  <th scope="col">ID évènement</th>
+                  <th scope="col">ID utilisateur</th>
+                  <th scope="col">ID réservation</th>
+                  <th scope="col">statut</th>
+ 
                 </tr>
               
         </thead>
@@ -23,13 +26,12 @@
             {% for reservation in reservations %}
 
                 <tr>
-                    <td>{{evenement[0]}}</td>
-                    <td>{{evenement[1]}}</td>
-                    <td>{{evenement[2]}}</td>
-                    <td>{{evenement[3]}}</td>
-                    <td>{{evenement[4]}}</td>
-                
-                    
+                    <td>{{reservation[0]}}</td>
+                    <td>{{reservation[1]}}</td>
+                    <td>{{reservation[2]}}</td>
+                    <td>{{reservation[4]}}</td>
+                    <td>{{reservation[5]}}</td>
+                    <td>{{reservation[6]}}</td>
                 </tr>
             {%endfor %}
            

@@ -75,42 +75,46 @@ class ReservationDao:
             return 0
 
     @classmethod
-    def filtrer_reservations_par_personne(cls,nom):
-        sql = """SELECT *FROM reservation WHERE nom = %s"""
+    def filtrer_reservations_id_user(cls,id_user):
+        sql = """SELECT *FROM reservation WHERE id_user = %s"""
         try:
-            ReservationDao.cursor.execute(sql,(nom,))
+            ReservationDao.cursor.execute(sql,(id_user,))
             reservations = ReservationDao.cursor.fetchall()
             if reservations:
-                return reservations, f"La personne {nom} a réservé la place."
+                return reservations, f"La personne {id_user} a réservé la place."
             else:
-                return None, f" Malheureusement, aucune reservation à été fait pour {nom}!"
+                return None, f" Malheureusement, aucune reservation à été fait pour {id_user}!"
         except Exception as error:
-           return None, f"Erreur lors de la récupération des réservations : {error}"
+           return None, f"Erreur lors de la récupération des réservations "
+
 
     @classmethod    
     def belongs_to_user(cls, id_reservation, id_user):
         sql = "SELECT COUNT(*) FROM reservation WHERE id_reservation = %s AND id_user = %s"
         params = (id_reservation, id_user)
         try:
-            cls.cursor.execute(sql, params)
-            count = cls.cursor.fetchone()[0]
-            return count > 0  # If count is greater than 0, the reservation belongs to the user
+            ReservationDao.cursor.execute(sql, params)
+            count = ReservationDao.cursor.fetchone()[0]
+            return count > 0  
         except Exception as error:
             print("Error checking if reservation belongs to user")
             return False 
         
 
     @classmethod
-    def annuler_reservation(cls,id):
-        sql = """DELETE FROM reservation WHERE id = %s"""
+    def annuler_reservation(cls,id_evenement,id_user,id_reservation):
+        sql = """DELETE FROM reservation WHERE id_evenement=%s AND id_user = %s AND id_reservation= %s"""
         try:
-            ReservationDao.cursor.execute(sql, (id,))
+            ReservationDao.cursor.execute(sql, (id_evenement,id_user,id_reservation))
             ReservationDao.connexion.commit()
             if ReservationDao.cursor.rowcount > 0:
-                return f"La réservation au numero {id} a bien été annulée."
+                message='success'
             else:
-                return f"Impossible d'annuler cette réservation car elle n'existe pas."
+                message = 'Aucune réservation retrouver avec ce ID.'
         except Exception as error:
-            return f"Une erreur est survenue lors de l'annulation de la réservation : {error}"
+            message='error'
+        return message
+        
+        
            
                 
