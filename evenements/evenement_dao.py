@@ -11,8 +11,8 @@ class EvenementDao:
 
     @classmethod
     def create_evenement(cls, evenement:Evenement):
-        sql = "INSERT INTO evenement (nom, date, emplacement, prix,id_evenement) VALUES (%s,%s,%s,%s,%s)"
-        params = (evenement.nom, evenement.date, evenement.emplacement, evenement.prix, evenement.id_evenement)
+        sql = "INSERT INTO evenement (nom, date, emplacement, total_seat, prix,id_evenement) VALUES (%s,%s,%s,%s,%s,%s)"
+        params = (evenement.nom, evenement.date, evenement.emplacement, evenement.total_seat,evenement.prix, evenement.id_evenement)
         try:
             EvenementDao.cursor.execute(sql, params)
             EvenementDao.connexion.commit()
@@ -36,8 +36,8 @@ class EvenementDao:
 
     @classmethod
     def modifier_evenement(cls, id_evenement, nouveau_evenement:Evenement):
-        sql = "UPDATE evenement SET nom = %s, date = %s, emplacement = %s, prix = %s WHERE id_evenement = %s"
-        params = (nouveau_evenement.nom, nouveau_evenement.date, nouveau_evenement.emplacement, nouveau_evenement.prix,id_evenement)
+        sql = "UPDATE evenement SET nom = %s, date = %s, emplacement = %s, total_seat = %s, prix = %s WHERE id_evenement = %s"
+        params = (nouveau_evenement.nom, nouveau_evenement.date, nouveau_evenement.emplacement,nouveau_evenement.total_seat, nouveau_evenement.prix,id_evenement)
         try:
             EvenementDao.cursor.execute(sql,params)
             EvenementDao.connexion.commit()
@@ -73,3 +73,17 @@ class EvenementDao:
         except Exception as error:
             print("Erreur lors de la récupération de l'événement par ID")
         return None
+    
+    @classmethod
+    def get_total_seat(cls,id_evenement):
+        sql = "SELECT * FROM evenement WHERE id_evenement = %s" 
+        try:
+            EvenementDao.cursor.execute(sql,(id_evenement,))
+            evenement = EvenementDao.cursor.fetchone()
+            if evenement:
+                return evenement[0]
+            else:
+                return None
+        except Exception as error:
+            print("Error")
+            return None

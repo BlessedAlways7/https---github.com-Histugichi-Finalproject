@@ -3,6 +3,7 @@ import database
 #from statut import ReservationStatut
 from reservations.statut import ReservationStatut
 from reservations.reservation import Reservation
+from evenements.evenement_dao import EvenementDao
 from flask_bcrypt import Bcrypt
 
 
@@ -56,28 +57,28 @@ class ReservationDao:
         
         
     @classmethod
-    def places_reservees(cls):
-        sql = "SELECT SUM(place) FROM reservation"
+    def places_reservees(cls,id_evenement):
+        sql = "SELECT SUM(place) FROM reservation WHERE id_evenement = %s" 
         try:
-            ReservationDao.cursor.execute(sql)
+            ReservationDao.cursor.execute(sql(id_evenement,))
             nombre_reservations = ReservationDao.cursor.fetchone()[0]
-            print (f"Nombre de reservations: {nombre_reservations}")
-            return nombre_reservations   
+            print (f"Nombre de reservations pour l'événement {id_evenement}: {nombre_reservations}")
+            return nombre_reservations if nombre_reservations is not None else 0  
         except Exception as error:
-            print (f"Erreur lors de la récupération des réservations! {error}")
+            print (f"Erreur lors de la récupération des réservations pour l'événement {id_evenement}")
             return 0
 
-       
     @classmethod
-    def nombre_places_disponibles(cls):
-        capacite_totale= 200
-        try:
-            reservations= ReservationDao.places_reservees()
-            disponibles = capacite_totale - reservations
-            return disponibles if disponibles >= 0 else 0          
-        except Exception as error:
-            print(f"Erreur lors du calcul des places disponibles!", error)
-            return 0
+    def nombre_places_disponibles(cls,id_evenement):
+        total_seats=EvenementDao.get_total_seat(id_evenement)
+        if total_seats is not None:
+            return None       
+        places_reservees=ReservationDao.places_reservees(id_evenement)
+        if places_reservees is not None:
+            return None
+        disponibles=total_seats-places_reservees
+        return disponibles
+
 
     @classmethod
     def filtrer_reservations_id_user(cls,id_user):
@@ -116,7 +117,6 @@ class ReservationDao:
             print("Erreur lors de l'affichage des statuts des réservations:")
             return None
            
-
     @classmethod
     def annuler_reservation(cls,id_evenement,id_user,id_reservation):
         sql = """DELETE FROM reservation WHERE id_evenement=%s AND id_user = %s AND id_reservation= %s"""

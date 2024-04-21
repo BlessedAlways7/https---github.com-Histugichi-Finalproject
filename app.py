@@ -105,13 +105,14 @@ def add_event():
         nom = req ['nom']
         date = req ['date']
         emplacement = req ['emplacement']
+        total_seat = req['total_seat']
         prix = req ['prix']
         id_evenement = req ['id']
         
-        if nom=="" or date=="" or emplacement=="" or prix=="" or id_evenement=="":
+        if nom=="" or date=="" or emplacement=="" or total_seat=="" or prix=="" or id_evenement=="":
             message="error"
         else:
-            evenement = Evenement(nom,date,emplacement,prix,id_evenement)
+            evenement = Evenement(nom,date,emplacement,total_seat,prix,id_evenement)
             message = EvenementDao.create_evenement(evenement)
         print(message)
     return render_template('event/add_event.html', message=message, evenement=evenement)
@@ -129,9 +130,10 @@ def modify_event():
         nom= request.form['nom'],
         date = request.form ['date'],
         emplacement = request.form ['emplacement'],
+        total_seat= request.form ['total_seat']
         prix = request.form['prix']  
        
-        if nom=="" or date=="" or emplacement=="" or prix=="":
+        if nom=="" or date=="" or emplacement=="" or total_seat=="" or prix=="":
             message="error"
         else:
             nouveau_evenement=Evenement(
@@ -139,6 +141,7 @@ def modify_event():
                 nom=nom,
                 date=date,
                 emplacement=emplacement,
+                total_seat=total_seat,
                 prix=prix
             )
             message =EvenementDao.modifier_evenement(id_evenement,nouveau_evenement)    
@@ -161,13 +164,14 @@ def delete_event():
         nom= request.form['nom']
         date = request.form ['date']
         emplacement = request.form ['emplacement']
+        total_seat=request.form['total_seat']
         prix = request.form['prix']
         id_evenement = request.form['id_evenement']
 
-        if nom=="" or date=="" or emplacement=="" or prix=="" or id_evenement=="":
+        if nom=="" or date=="" or emplacement=="" or total_seat==""or prix=="" or id_evenement=="":
             message="error"
         else:
-            evenement = Evenement(nom, date,emplacement,prix,id_evenement)
+            evenement = Evenement(nom, date,emplacement,total_seat,prix,id_evenement)
             message = EvenementDao.supprimer_evenement(id_evenement)
         print(message)
     return render_template('event/delete_event.html', message=message, evenement=evenement)
