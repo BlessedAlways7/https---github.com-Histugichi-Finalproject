@@ -7,7 +7,7 @@
 
 <h1>Veuillez remplir ces champs pour modifier un évènement.</h1>
 
-    {% if message=='error'%}
+    {% if message %}
       <p class="alert alert-danger">Tous les champs doivent être remplie.</p>
     
     {% elif message=='failure' %}
@@ -16,10 +16,11 @@
     
     {% elif message=='success' %}
      <p class="alert alert-success">L'évènement {{evenement.id_evenement}} a bien été modifie !</p>
-    {% endif %}
+  
+     {% endif %}
 
 <form action="{{url_for('modify_event')}}" method="post" class = "container">
-    <input type="hidden" name="id_evenement" value="{{ evenement.id_evenement }}">
+    <input type="hidden" name="id_evenement" value="{{evenement.id_evenement}}">
     <div class="form-floating mb-3">
         <input name = 'nom' type="text" class="form-control" id="Nom" placeholder="">
         <label for="nom">Nom </label>
@@ -36,7 +37,7 @@
         <input  name = 'prix' type="text" class="form-control" id="Prix" placeholder="">
         <label for="prix">Prix</label>
       </div>
-      
+    
     <input type="submit" value="Modifier" class = "btn btn-success">
 </form>
 

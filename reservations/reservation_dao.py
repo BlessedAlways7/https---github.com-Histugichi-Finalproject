@@ -104,7 +104,18 @@ class ReservationDao:
         except Exception as error:
             print("Error checking if reservation belongs to user")
             return False 
-        
+
+    @classmethod
+    def afficher_statut_reservations(cls):
+        sql= "SELECT*FROM reservation" 
+        try:
+            ReservationDao.cursor.execute(sql)
+            reservations = ReservationDao.cursor.fetchall()
+            return reservations
+        except Exception as error:
+            print("Erreur lors de l'affichage des statuts des réservations:")
+            return None
+           
 
     @classmethod
     def annuler_reservation(cls,id_evenement,id_user,id_reservation):
