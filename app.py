@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, session, url_for, redirect
-
 import bcrypt
+
+
+
 
 from users.user_dao import UserDao
 from users.user import User
@@ -16,6 +18,9 @@ from reservations.statut import ReservationStatut
 app = Flask(__name__,)
 app.secret_key = 'secretkey'
 salt = bcrypt.gensalt(rounds=12)
+
+
+
 
 @app.route('/')
 def home():
@@ -122,7 +127,25 @@ def add_event():
 def modify_event():
     if "is_admin" not in session:
         return redirect(url_for('login'))
-    message, evenement=EvenementDao.modifier_evenement()
+    message=None
+    evenement=None
+    
+    if request.method == "POST":
+        id_evenement=request.form['id_evenement']
+        nouveau_evenement=Evenement(
+            id_evenement=id_evenement,
+            nom= request.form['nom'],
+            date = request.form ['date'],
+            emplacement = request.form ['emplacement'],
+            prix = request.form['prix']  
+        )      
+        message =EvenementDao.modifier_evenement(id_evenement,nouveau_evenement)
+        if message== 'success':
+            return redirect(url_for('evenement'))
+            
+    else:
+        id_evenement= request.args.get('id_evenement')
+        evenement = EvenementDao.recuperer_evenement_par_id(id_evenement)
     return render_template('event/modify_event.html', message=message, evenement=evenement)
 
 @app.route('/delete_event', methods= ['POST', 'GET'])
@@ -169,12 +192,10 @@ def delete_reservation():
  
         if  id_evenement=="" or id_user=="" or id_reservation=="":
             message="error"
-        else:
-            reservation=Reservation(nom=None, date=None,place=None,id_evenement=id_evenement,id_user=id_user,id_reservation=id_reservation,statut=None)
+        else:           
             message=ReservationDao.annuler_reservation(id_evenement,id_user,id_reservation)
         print(message)
     return render_template('reservation/delete_reservation.html', message=message, reservation=reservation)
-
 
 
 @app.route('/statut')
@@ -189,34 +210,42 @@ def logout():
     session.clear() # On vide la session
     return redirect(url_for('login'))
 
+
 @app.route('/reservations', methods=['POST', 'GET'])
 def reservations():
     if 'username' not in session and "is_admin" not in session:
         return redirect(url_for('login'))
-
+    
     message=None
     reservation=None
-    id_evenement= request.args.get('id_evenement')
-    id_user= request.args.get('id_user')
-
+    id_evenement = request.form.get('id_evenement') 
+    id_user= request.form.get('id_user')
+    
+    
     if request.method == 'POST':
         nom = request.form['nom']
         date = request.form['date']
         place = request.form['place']
-        
-        
+
         if nom=="" or date=="" or place=="" :
             message="error"
         else:
             id_reservation =1
-            statut = "En attente"
+            statut = ReservationStatut.EN_ATTENTE
+            
             reservation = Reservation(nom, date, place,id_evenement,id_user,id_reservation,statut)
             message = ReservationDao.reserver_place(reservation)
             if message =='success':
                 return redirect(url_for('paiement'))
             else:
                 message= "Une erreur s'est produite lors de la réservation. Veuillez réessayer."
-    return render_template('reservation/reservations.html',message=message, reservation=reservation)
+    
+    evenement = EvenementDao.recuperer_evenement_par_id(id_evenement) if id_evenement else None
+    user = UserDao.recuperer_user_par_id(id_user) if id_user else None
+    
+    return render_template('reservation/reservations.html',message=message, reservation=reservation,evenement=evenement,user=user,id_evenement=id_evenement,id_user=id_user)
+
+
 
 @app.route('/historique')
 def historique():

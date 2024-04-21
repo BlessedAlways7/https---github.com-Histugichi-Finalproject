@@ -1,4 +1,6 @@
 import database
+#from reservation import Reservation
+#from statut import ReservationStatut
 from reservations.statut import ReservationStatut
 from reservations.reservation import Reservation
 from flask_bcrypt import Bcrypt
@@ -29,11 +31,14 @@ class ReservationDao:
         params = (reservation.nom, reservation.date,reservation.place, reservation.id_evenement,reservation.id_user,reservation.id_reservation, reservation.statut)   
         try:
             ReservationDao.cursor.execute(sql, params)
-            ReservationDao.connexion.commit()    
+            ReservationDao.connexion.commit()   
+            success=True 
             message = 'success'
         except Exception as error:
+            success=False
             message = 'failure'
-        return message
+            print("Error insertion de la reservation")
+        return success,message
         
 
     @classmethod

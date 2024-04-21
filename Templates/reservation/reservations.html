@@ -4,7 +4,6 @@
 {% block content %}
 <br>
 
-
 <h1>Veuillez remplir ces champs pour réserver.</h1>
 
     {% if message=='error'%}
@@ -18,7 +17,7 @@
      <p class="alert alert-success"> La réservation pour {{reservation.nom}} avec identification {{reservation.id_reservation}} a été réserver!</p>
     {% endif %}
 
-<form action="{{url_for('reservations')}}" method="post" class = "container">
+<form action="{{url_for('reservations', id_evenement=id_evenement, id_user=id_user)}}" method="post" class = "container">
     <div class="form-floating mb-3">
         <input name = 'nom' type="text" class="form-control" id="Nom" placeholder="">
         <label for="nom">Nom de l'activité</label>
@@ -31,7 +30,13 @@
         <input  name='place' type="text" class="form-control" id="Place" placeholder="">
         <label for="place">Nombre de place</label>
       </div>
-      
+      <div class="form-floating mb-3">
+        <input type="hidden" name="id_evenement" value="{{ id_evenement }}">
+      </div>
+      <div class="form-floating mb-3">
+        <input type="hidden" name="id_user" value="{{ id_user }}">
+      </div> 
+        
     <input type="submit" value="Réserver" class = "btn btn-success">
 </form>
 

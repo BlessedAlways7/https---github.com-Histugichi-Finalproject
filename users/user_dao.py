@@ -1,4 +1,6 @@
 import database
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from users.user import User
 
 #from user import User
@@ -46,6 +48,20 @@ class UserDao:
             user =()
             message= user
         return (message, user)
+    
+    @classmethod
+    def recuperer_user_par_id(cls, id_user):
+        sql = "SELECT * FROM user WHERE id_user = %s" 
+        try:
+            UserDao.cursor.execute(sql,(id_user,))
+            user = UserDao.cursor.fetchone()
+            if user:
+                return User(user)
+            else:
+                return None
+        except Exception as error:
+            print("Erreur lors de la récupération de l'utilisateur par ID")
+        return None
     
     @classmethod
     def get_user_role(cls,username):

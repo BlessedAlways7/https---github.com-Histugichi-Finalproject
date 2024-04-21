@@ -3,9 +3,41 @@
 {% block title %} Modifier un évènement {% endblock %}
 {% block content %}
 
-<h1>Modification d'un événement</h1>
+<br>
 
+<h1>Veuillez remplir ces champs pour modifier un évènement.</h1>
 
+    {% if message=='error'%}
+      <p class="alert alert-danger">Tous les champs doivent être remplie.</p>
+    
+    {% elif message=='failure' %}
+      <p class="alert alert-warning">Une erreur est survenue lors de la modifidcation de l'évènement,
+       veuillez vous assurer que tout les information sont exacte.</p>
+    
+    {% elif message=='success' %}
+     <p class="alert alert-success">L'évènement {{evenement.id_evenement}} a bien été modifie !</p>
+    {% endif %}
 
+<form action="{{url_for('modify_event')}}" method="post" class = "container">
+    <input type="hidden" name="id_evenement" value="{{ evenement.id_evenement }}">
+    <div class="form-floating mb-3">
+        <input name = 'nom' type="text" class="form-control" id="Nom" placeholder="">
+        <label for="nom">Nom </label>
+      </div>
+      <div class="form-floating mb-3">
+        <input name = 'date' type="text" class="form-control" id="Date" placeholder="">
+        <label for="date">Year-Month-Date</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input  name='emplacement' type="text" class="form-control" id="Emplacement" placeholder="">
+        <label for="emplacement">Lieu</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input  name = 'prix' type="text" class="form-control" id="Prix" placeholder="">
+        <label for="prix">Prix</label>
+      </div>
+      
+    <input type="submit" value="Modifier" class = "btn btn-success">
+</form>
 
 {% endblock %}

@@ -1,7 +1,6 @@
 import database
 from paiements.paiement import Paiement
 #from paiement import Paiement
-from flask_bcrypt import Bcrypt
 
 class PaiementDao:
     connexion = database.connect_db()

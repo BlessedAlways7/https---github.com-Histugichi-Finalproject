@@ -1,4 +1,5 @@
 import database
+
 from evenements.evenement import Evenement
 from flask_bcrypt import Bcrypt
 #from evenement import Evenement
@@ -35,15 +36,16 @@ class EvenementDao:
 
     @classmethod
     def modifier_evenement(cls, id_evenement, nouveau_evenement:Evenement):
-        sql = "UPDATE evenement SET nom = %s, date = %s, emplacement = %s, prix = %s, WHERE id = %s",
+        sql = "UPDATE evenement SET nom = %s, date = %s, emplacement = %s, prix = %s WHERE id_evenement = %s"
         params = (nouveau_evenement.nom, nouveau_evenement.date, nouveau_evenement.emplacement, nouveau_evenement.prix,id_evenement)
         try:
             EvenementDao.cursor.execute(sql,params)
             EvenementDao.connexion.commit()
-            message="Mise à jour réussie"
+            message='success'
         except Exception as error :
-            message = "Erreur lors de la modification de l'évenement"
+            message = 'erreur'
         return message
+
       
     @classmethod
     def supprimer_evenement(cls, id_evenement):
