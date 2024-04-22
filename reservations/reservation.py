@@ -6,7 +6,6 @@ class Reservation:
         self.__id_evenement= id_evenement
         self.__id_user= id_user
         self.__id_reservation = id_reservation
-        
         self.__statut= statut
         
     @property

@@ -6,19 +6,22 @@
 
 <h1>Confirmation de réservation</h1>
 
-    {% if message=='error'%}
-      <p class="alert alert-danger">Tous les champs doivent être remplie.</p>
-    
-    {% elif message=='failure' %}
-      <p class="alert alert-warning">Une erreur est survenue lors de la confirmation,
-       veuillez vous assurer que tout les information sont exacte.
-      </p>
-    
-    {% elif message=='success' %}
-     <p class="alert alert-success"> Merci, {{user.nom_complet }}, votre réservation pour l'activité {{evenement.nom}} le {{evenement.date}} a été confirmée.
-     Un email de confirmation a été envoyé à {{user.email}}. </p>
 
-    {% endif %}
-
+{% if session and user and evenement %}
+  <p>Merci, {{ user.nom_complet }}, votre réservation pour l'activité {{ evenement.nom }} le {{ evenement.date }} a été confirmée.</p>
+  <p>Un email de confirmation a été envoyé à {{ user.email }}.</p>
+{% else %}
+  <p>Erreur lors de la confirmation de la réservation.</p>
+  {% if not user %}
+    <p>Impossible de trouver les détails de l'utilisateur.</p>
+  {% elif not evenement %}
+    <p>L'événement spécifié n'existe pas.</p>
+  {% endif %} 
+{% endif %}
 
 {% endblock %}
+
+
+
+
+

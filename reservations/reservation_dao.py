@@ -38,7 +38,7 @@ class ReservationDao:
         except Exception as error:
             success=False
             message = 'failure'
-            print("Error insertion de la reservation")
+            print("Error lors de l'insertion de la réservation")
         return success,message
         
 

@@ -93,7 +93,7 @@ def evenement():
     message, evenements=EvenementDao.get_all()
     return render_template('event/evenement.html', message=message, evenements=evenements)
 
-@app.route('/places',methods= ['GET'])
+@app.route('/places',methods= ['POST','GET'])
 def places():
     nom = request.args.get('nom')
     id_evenement = request.args.get('id_evenement')
@@ -246,14 +246,14 @@ def reservations():
     
     message=None
     reservation=None
-    id_evenement = request.form.get('id_evenement') 
-    id_user= request.form.get('id_user')
-    
+
     
     if request.method == 'POST':
         nom = request.form['nom']
         date = request.form['date']
         place = request.form['place']
+        id_evenement = request.form.get('id_evenement') 
+        id_user= request.form.get('id_user')
 
         if nom=="" or date=="" or place=="" :
             message="error"
@@ -262,16 +262,16 @@ def reservations():
             statut = ReservationStatut.EN_ATTENTE
             
             reservation = Reservation(nom, date, place,id_evenement,id_user,id_reservation,statut)
-            message = ReservationDao.reserver_place(reservation)
-            if message =='success':
+            success, message = ReservationDao.reserver_place(reservation)
+            if success:
+                session['id_user']=id_user
                 return redirect(url_for('paiement'))
             else:
                 message= "Une erreur s'est produite lors de la réservation. Veuillez réessayer."
+                return redirect(url_for('confirmation'))
+   
     
-    evenement = EvenementDao.recuperer_evenement_par_id(id_evenement) if id_evenement else None
-    user = UserDao.recuperer_user_par_id(id_user) if id_user else None
-    
-    return render_template('reservation/reservations.html',message=message, reservation=reservation,evenement=evenement,user=user,id_evenement=id_evenement,id_user=id_user)
+    return render_template('reservation/reservations.html',message=message, reservation=reservation)
 
 
 @app.route('/historique')
@@ -287,9 +287,9 @@ def confirmation():
     id_reservation= request.args.get('id_reservation')
     message=ReservationDao.confirmer_reservation(id_reservation)
     if message== 'success':
-        return redirect(url_for('confirmation'))
+        return redirect(url_for('reservation'))
     else:
-        return render_template('paiement.html',message=message)
+        return render_template('confirmation.html',message=message)
 
 @app.route('/users')
 def users():
@@ -330,11 +330,13 @@ def add_user():
 
 @app.route('/paiement', methods=['POST','GET'])
 def paiement():
+    if 'username' not in session and "is_admin" not in session:
+        return redirect(url_for('login'))
     message=None
     montant = request.args.get('montant')
+    evenement=None
    
     if request.method == 'POST':
-        
         mode_paiement= request.form['mode_paiement']
         numero_carte=request.form['numero_carte']
         date_expiration=request.form['date_expiration']
@@ -345,12 +347,16 @@ def paiement():
         else:
             paiement= Paiement(montant,mode_paiement,numero_carte,date_expiration,cvv)
             message = PaiementDao.ajouter_paiement(paiement)
-            return redirect(url_for('confirmation'))
+            if message=='success':
+                return redirect(url_for('confirmation'))
+        
         id_evenement = request.args.get('id_evenement')
-        evenement = EvenementDao.recuperer_evenement_par_id(id_evenement)
+        if id_evenement:
+            evenement = EvenementDao.recuperer_evenement_par_id(id_evenement)
     if evenement:
         montant = evenement[4]
     return render_template('paiement.html', message=message, paiement=paiement, montant=montant)
+
 
 
 if __name__ == "__main__":
