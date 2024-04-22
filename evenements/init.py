@@ -13,17 +13,8 @@ message = EvenementDao.supprimer_evenement('3567627')
 print(message)
 
 """
-evenement=EvenementDao.recuperer_evenement_par_id(id_evenement)
-nouveau_evenement=Evenement(
-    id_evenement=id_evenement,
-    nom='Bingo',
-    date="2024-08-19",
-    emplacement="Casino de Mont-Royal",
-    prix="35",
-)
-
-message = EvenementDao.modifier_evenement(id_evenement,nouveau_evenement)
-print(message)
+(message,event_info)= EvenementDao.get_event_info_with_reserved_places()
+print(message,event_info)
 
 
 

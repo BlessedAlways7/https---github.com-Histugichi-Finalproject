@@ -93,6 +93,28 @@ def evenement():
     message, evenements=EvenementDao.get_all()
     return render_template('event/evenement.html', message=message, evenements=evenements)
 
+@app.route('/places',methods= ['GET'])
+def places():
+    nom = request.args.get('nom')
+    id_evenement = request.args.get('id_evenement')
+    total_seat=request.args.get('total_seat')
+    reserver_place=request.args.get('place')
+    
+    print(id_evenement,nom,total_seat,reserver_place)
+
+    if id_evenement is None and nom is None:
+        message= 'error'
+        return render_template('places.html', message=message)
+    else:
+        event_info =EvenementDao.get_event_info_with_reserved_places(id_evenement,nom,total_seat,reserver_place)
+        if event_info is not None:
+            message='success'
+            print(message,event_info)
+    
+    return render_template('places.html',message=message,event_info=event_info)
+
+
+
 @app.route('/add_event', methods= ['POST', 'GET'])
 def add_event():
     if "is_admin" not in session:

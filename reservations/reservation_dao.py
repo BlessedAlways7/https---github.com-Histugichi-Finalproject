@@ -54,8 +54,7 @@ class ReservationDao:
         except Exception as error:
             message = 'failure'
         return message
-        
-        
+    
     @classmethod
     def places_reservees(cls,id_evenement):
         sql = "SELECT SUM(place) FROM reservation WHERE id_evenement = %s" 
@@ -67,18 +66,19 @@ class ReservationDao:
         except Exception as error:
             print (f"Erreur lors de la récupération des réservations pour l'événement {id_evenement}")
             return 0
-
+         
+ 
     @classmethod
-    def nombre_places_disponibles(cls,id_evenement):
-        total_seats=EvenementDao.get_total_seat(id_evenement)
+    def places_disponibles(cls,id_evenement,nom):
+        total_seats = EvenementDao.get_event_info_with_reserved_places(id_evenement,nom)
         if total_seats is not None:
             return None       
         places_reservees=ReservationDao.places_reservees(id_evenement)
         if places_reservees is not None:
             return None
-        disponibles=total_seats-places_reservees
-        return disponibles
-
+        places_disponibles= total_seats - places_reservees
+        return places_disponibles
+        
 
     @classmethod
     def filtrer_reservations_id_user(cls,id_user):

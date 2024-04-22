@@ -1,0 +1,45 @@
+{% extends 'default.html'%}
+{% block title %} Places  {% endblock %}
+
+{% block content %}
+
+
+<h1>Voici les places disponibles.</h1>
+
+    
+<table class="table table-success table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Nom évènement</th>
+            <th scope="col">ID évènement</th>
+            <th scope="col">Place total</th>
+            <th scope="col">Places réservées</th>
+            <th scope="col">Places disponibles</th>
+                  
+        </tr>
+              
+    </thead>
+    <tbody>
+        {% if event_info is not none %}
+            {% for event_info in event_infos %}
+
+                <tr>
+                    <td>{{event['nom']}}</td>
+                    <td>{{event['id_evenement']}}</td>
+                    <td>{{event['total_seat']}}</td>
+                    <td>{{event['reserved_places']}}</td>
+                    <td>{{event['places_disponibles']}}</td>
+                    
+                </tr>
+            {%endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">Aucune information sur les évènements disponible.</td>
+            </tr>
+        {% endif %}
+           
+    </tbody>
+</table>
+
+{% endblock %}
+

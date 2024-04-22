@@ -74,16 +74,30 @@ class EvenementDao:
             print("Erreur lors de la récupération de l'événement par ID")
         return None
     
+
     @classmethod
-    def get_total_seat(cls,id_evenement):
-        sql = "SELECT * FROM evenement WHERE id_evenement = %s" 
+    def get_event_info_with_reserved_places(cls,id_evenement,nom):
+        sql = """
+                SELECT 
+                    e.nom,
+                    e.id_evenement, 
+                    e.total_seat,
+                    (e.total_seat - COALESCE(SUM(r.place), 0)) AS places_disponibles
+                FROM 
+                    evenement e
+                LEFT JOIN 
+                    reservation r ON e.id_evenement = r.id_evenement AND e.nom= r.nom
+                WHERE 
+                    e.id_evenement = %s AND e.nom = %s
+                GROUP BY 
+                    e.id_evenement, e.total_seat;
+              """
         try:
-            EvenementDao.cursor.execute(sql,(id_evenement,))
-            evenement = EvenementDao.cursor.fetchone()
-            if evenement:
-                return evenement[0]
-            else:
-                return None
+            EvenementDao.cursor.execute(sql,(id_evenement,nom))
+            event_info = EvenementDao.cursor.fetchall()
+            return event_info
         except Exception as error:
-            print("Error")
+            print="error"
             return None
+        
+    
