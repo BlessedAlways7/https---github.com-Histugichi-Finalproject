@@ -6,7 +6,7 @@ from reservations.reservation import Reservation
 from evenements.evenement_dao import EvenementDao
 from flask_bcrypt import Bcrypt
 
-
+# Création de la classe ReservationDao.
 class ReservationDao:
     connexion = database.connect_db()
     cursor = connexion.cursor()
@@ -14,6 +14,7 @@ class ReservationDao:
     def __init__(self) -> None:
         pass
 
+    # Méthode pour afficher toute les réservations.
     @classmethod
     def get_all(cls):
         sql = "SELECT * FROM reservation"
@@ -26,6 +27,7 @@ class ReservationDao:
             message ="erreur"
         return (message, reservations)
     
+    # Méthode reserver_place pour réserver une place.
     @classmethod
     def reserver_place(cls,reservation:Reservation):
         sql = "INSERT INTO reservation (nom, date, place,id_evenement,id_user,statut) VALUES (%s,%s, %s,%s,%s,%s)"
@@ -44,7 +46,7 @@ class ReservationDao:
             print("Error lors de l'insertion de la réservation")
         return (success,message,last_id)
         
-
+    # Méthode pour confirmer une réservation.
     @classmethod
     def confirmer_reservation(cls, id_reservation):
         # Mettre à jour le statut de la réservation dans la base de données
@@ -58,6 +60,7 @@ class ReservationDao:
             message = 'failure'
         return message
     
+    # Méthode pour calculer le nombre de réservations.
     @classmethod
     def places_reservees(cls,id_evenement):
         sql = "SELECT SUM(place) FROM reservation WHERE id_evenement = %s" 
@@ -70,7 +73,7 @@ class ReservationDao:
             print (f"Erreur lors de la récupération des réservations pour l'événement {id_evenement}")
             return 0
          
- 
+    # Méthode  pour calculer les places disponibles.
     @classmethod
     def places_disponibles(cls,id_evenement,nom):
         total_seats = EvenementDao.get_event_info_with_reserved_places(id_evenement,nom)
@@ -82,7 +85,7 @@ class ReservationDao:
         places_disponibles= total_seats - places_reservees
         return places_disponibles
         
-
+    # Méthode pour afficher les réservation par ID de l'utilisateur.
     @classmethod
     def filtrer_reservations_id_user(cls,id_user):
         sql = """SELECT *FROM reservation WHERE id_user = %s"""
@@ -94,21 +97,9 @@ class ReservationDao:
             else:
                 return None, f" Malheureusement, aucune reservation à été fait pour {id_user}!"
         except Exception as error:
-           return None, f"Erreur lors de la récupération des réservations "
+           return None, f"Erreur lors de la récupération des réservations. "
 
-
-    @classmethod    
-    def belongs_to_user(cls, id_reservation, id_user):
-        sql = "SELECT COUNT(*) FROM reservation WHERE id_reservation = %s AND id_user = %s"
-        params = (id_reservation, id_user)
-        try:
-            ReservationDao.cursor.execute(sql, params)
-            count = ReservationDao.cursor.fetchone()[0]
-            return count > 0  
-        except Exception as error:
-            print("Error checking if reservation belongs to user")
-            return False 
-
+    # Méthode pour afficher le statut de la réservation.
     @classmethod
     def afficher_statut_reservations(cls):
         sql= "SELECT*FROM reservation" 
@@ -117,9 +108,10 @@ class ReservationDao:
             reservations = ReservationDao.cursor.fetchall()
             return reservations
         except Exception as error:
-            print("Erreur lors de l'affichage des statuts des réservations:")
+            print("Erreur lors de l'affichage des statuts des réservations.")
             return None
            
+     # Méthode pour annuler une réservation.      
     @classmethod
     def annuler_reservation(cls,id_evenement,id_user,id_reservation):
         sql = """DELETE FROM reservation WHERE id_evenement=%s AND id_user = %s AND id_reservation= %s"""

@@ -2,11 +2,14 @@ import database
 from paiements.paiement import Paiement
 #from paiement import Paiement
 
+
+# Création de la classe PaiementDao.
 class PaiementDao:
     connexion = database.connect_db()
     cursor = connexion.cursor()
 
 
+# Méthode pour afficher tout les paiements.
     @classmethod
     def get_all(cls):
         sql = "SELECT *from paiement"
@@ -19,7 +22,7 @@ class PaiementDao:
             message = 'error'
         return (message, paiements)
 
-
+# Méthode pour faire un paiement.
     @classmethod
     def ajouter_paiement(cls, paiement:Paiement):
         sql = "INSERT INTO paiement (montant,mode_paiement,numero_carte,date_expiration,cvv) VALUES (%s,%s,%s,%s,%s)"

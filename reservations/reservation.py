@@ -1,3 +1,4 @@
+# Création de la classe Réservations avec les attributs.
 class Reservation:
     def __init__(self,nom,date, place,id_evenement,id_user, statut) -> None:
         self.__nom = nom

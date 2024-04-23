@@ -1,3 +1,4 @@
+# Création de la classe Évènements avec les attributs.
 class Evenement:
     def __init__(self,nom, date,emplacement,total_seat,prix,id_evenement) -> None:
         self.__nom = nom

@@ -5,10 +5,12 @@ from flask_bcrypt import Bcrypt
 #from evenement import Evenement
 
 
+# Création de la classe EvenementDao.
 class EvenementDao:
     connexion = database.connect_db()
     cursor = connexion.cursor()
 
+# Méthode créer un évènement.
     @classmethod
     def create_evenement(cls, evenement:Evenement):
         sql = "INSERT INTO evenement (nom, date, emplacement, total_seat, prix,id_evenement) VALUES (%s,%s,%s,%s,%s,%s)"
@@ -20,7 +22,8 @@ class EvenementDao:
         except Exception as error:
             message = 'failure'
         return message
-    
+
+# Méthode pour afficher tout les évènements.
     @classmethod
     def get_all(cls):
         sql = "SELECT * FROM evenement"
@@ -34,6 +37,7 @@ class EvenementDao:
         return (message, evenements)
 
 
+# Méthode pour modifier l'évènement.
     @classmethod
     def modifier_evenement(cls, id_evenement, nouveau_evenement:Evenement):
         sql = "UPDATE evenement SET nom = %s, date = %s, emplacement = %s, total_seat = %s, prix = %s WHERE id_evenement = %s"
@@ -46,7 +50,7 @@ class EvenementDao:
             message = 'erreur'
         return message
 
-      
+# Méthode pour supprimer un évènement.
     @classmethod
     def supprimer_evenement(cls, id_evenement):
         sql = "DELETE FROM evenement WHERE id_evenement = %s"
@@ -56,10 +60,11 @@ class EvenementDao:
             message= "L'événement a été supprimé avec succès."
             success=True
         except Exception as error :
-            message = "Erreur lors de la suppression de l'évenement"
+            message = "Erreur lors de la suppression de l'évenement."
             success=False
         return success,message
 
+# Méthode pour récupérer un évènement par ID de l'évènement.
     @classmethod
     def recuperer_evenement_par_id(cls, id_evenement):
         sql = "SELECT * FROM evenement WHERE id_evenement = %s" 
@@ -73,7 +78,8 @@ class EvenementDao:
         except Exception as error:
             print(f"Erreur lors de la récupération de l'événement par ID", error)
         return None
-    
+
+# Méthode pour récupérer l'évènement par son nom.
     @classmethod
     def get_evenement_id_by_name(cls, nom):
         sql = "SELECT id_evenement FROM evenement WHERE nom = %s"
@@ -88,7 +94,7 @@ class EvenementDao:
             print("Error retrieving event ID by name")
             return None
     
-
+# Méthode pour récupérer les information de l'évènement avec sa place réservée.
     @classmethod
     def get_event_info_with_reserved_places(cls,id_evenement,nom):
         sql = """
@@ -108,8 +114,8 @@ class EvenementDao:
               """
         try:
             EvenementDao.cursor.execute(sql,(id_evenement,nom))
-            event_info = EvenementDao.cursor.fetchall()
-            return event_info
+            event_info_with_places = EvenementDao.cursor.fetchone()
+            return event_info_with_places
         except Exception as error:
             print="error"
             return None

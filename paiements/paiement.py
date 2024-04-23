@@ -1,3 +1,4 @@
+# Création de la classe Paiemenet avec les attributs.
 class Paiement:
     def __init__(self,montant,mode_paiement,numero_carte,date_expiration,cvv) -> None:
         

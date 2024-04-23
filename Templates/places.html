@@ -21,14 +21,14 @@
     </thead>
     <tbody>
         {% if event_info is not none %}
-            {% for event_info in event_infos %}
+            {% for event in event_info %}
 
                 <tr>
-                    <td>{{event['nom']}}</td>
-                    <td>{{event['id_evenement']}}</td>
-                    <td>{{event['total_seat']}}</td>
-                    <td>{{event['reserved_places']}}</td>
-                    <td>{{event['places_disponibles']}}</td>
+                    <td>{{event.nom}}</td>
+                    <td>{{event.id_evenement}}</td>
+                    <td>{{event.total_seat}}</td>
+                    <td>{{event.place}}</td>
+                    <td>{{event.places_disponibles}}</td>
                     
                 </tr>
             {%endfor %}

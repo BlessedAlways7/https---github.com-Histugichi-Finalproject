@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 import bcrypt
-
+import os
+from dotenv import load_dotenv
 from users.user_dao import UserDao
 from users.user import User
 from evenements.evenement import Evenement
@@ -11,23 +12,32 @@ from reservations.reservation_dao import ReservationDao
 from reservations.reservation import Reservation
 from reservations.statut import ReservationStatut
 
-
+load_dotenv()
 app = Flask(__name__,)
-app.secret_key = 'secretkey'
+app.secret_key = os.environ.get('SECRET_KEY')
+db_user=os.environ.get('DB_USER')
+db_host=os.environ.get('DB_HOST')
+db_password=os.environ.get('DB_PASSWORD')
+db_database=os.environ.get('DB_DATABASE')
+
 salt = bcrypt.gensalt(rounds=12)
 
+#Afficher la page home.
 @app.route('/')
 def home():
     return render_template('home.html')
 
+#Affiche la page de défaut admin.
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
 
+#Afficher la page d'accueil.
 @app.route('/accueil')
 def accueil():
     return render_template('accueil.html')
 
+# Permet à l'utilisateur ou l'administrateur de se connecter à son compte.
 @app.route('/login',methods= ['POST', 'GET'])
 def login():
     req = request.form
@@ -64,6 +74,7 @@ def login():
         print(message)
     return render_template('login.html', message=message, user=None)
 
+# Permet a un utilisateur de se se créer un compte.
 @app.route('/registrer',methods= ['POST', 'GET'])
 def registrer():
     req = request.form
@@ -88,47 +99,48 @@ def registrer():
         print(message)
     return render_template('user/registrer.html', message=message, user=user)
 
+# Permet d'afficher les évènements.
 @app.route('/evenement')
 def evenement():
     message, evenements=EvenementDao.get_all()
     return render_template('event/evenement.html', message=message, evenements=evenements)
 
+#Permet d'afficher les places (total,réservées, disponibles) selon l'évènement.
 @app.route('/places',methods= ['POST','GET'])
 def places():
-    nom = request.args.get('nom')
-    id_evenement = request.args.get('id_evenement')
-    total_seat=request.args.get('total_seat')
-    reserver_place=request.args.get('place')
-    
-    print(id_evenement,nom,total_seat,reserver_place)
+    message=None
+    event_info=None
+    if request.method=="GET":
+        nom = request.args.get('nom')
+        id_evenement = request.args.get('id_evenement')
 
-    if id_evenement is None and nom is None:
-        message= 'error'
-        return render_template('places.html', message=message)
+    if id_evenement and nom:
+        event_info=EvenementDao.get_event_info_with_reserved_places(id_evenement, nom)
+        if event_info:
+            nom,id_evenement,total_seat,place,places_disponibles=event_info
+            return render_template('places.html', nom=nom, id_evenement=id_evenement, 
+                total_seat=total_seat, place=place, places_disponibles=places_disponibles)
+        else:
+            message = 'Event information not found.' 
     else:
-        event_info =EvenementDao.get_event_info_with_reserved_places(id_evenement,nom,total_seat,reserver_place)
-        if event_info is not None:
-            message='success'
-            print(message,event_info)
-    
+        message = 'ID and name of the event are required.'
     return render_template('places.html',message=message,event_info=event_info)
 
-
+#Permet à l'administrateur d'ajouter un évènement.
 @app.route('/add_event', methods= ['POST', 'GET'])
 def add_event():
     if "is_admin" not in session:
         return redirect(url_for('login'))
-    req = request.form
     message=None
     evenement=None
 
     if request.method == "POST":
-        nom = req ['nom']
-        date = req ['date']
-        emplacement = req ['emplacement']
-        total_seat = req['total_seat']
-        prix = req ['prix']
-        id_evenement = req ['id']
+        nom = request.form ['nom']
+        date = request.form ['date']
+        emplacement = request.form ['emplacement']
+        total_seat = request.form ['total_seat']
+        prix = request.form ['prix']
+        id_evenement = request.form ['id']
         
         if nom=="" or date=="" or emplacement=="" or total_seat=="" or prix=="" or id_evenement=="":
             message="error"
@@ -138,11 +150,13 @@ def add_event():
         print(message)
     return render_template('event/add_event.html', message=message, evenement=evenement)
 
+#Permet à l'administrateur de voir les évènements.
 @app.route('/evenement_admin')
 def evenement_admin():
     message, evenements=EvenementDao.get_all()
     return render_template('admin/evenement_admin.html', message=message, evenements=evenements)
 
+#Permet à l'administrateur de modifier les information de l'évènement selon l'id de l'évènement.
 @app.route('/modify_event', methods= ['POST', 'GET'])
 def modify_event():
     if "is_admin" not in session:
@@ -184,11 +198,9 @@ def modify_event():
                 message = "Failed to modify event."
         else:
             message = "Event not found."
-    
     return render_template('event/modify_event.html', message=message, evenement=evenement)
 
-   
-
+#Permet à l'administrateur de supprimer un évènement.
 @app.route('/delete_event', methods= ['POST', 'GET'])
 def delete_event():
     if "is_admin" not in session:
@@ -212,7 +224,7 @@ def delete_event():
         print(message)
     return render_template('event/delete_event.html', message=message, evenement=evenement)
 
-
+#Permet à l'administrateur d'afficher les réservations.
 @app.route('/liste_reservation')
 def liste_reservation():
     if "is_admin" not in session:
@@ -220,6 +232,7 @@ def liste_reservation():
     message, reservations=ReservationDao.get_all()
     return render_template('reservation/liste_reservation.html', message=message, reservations=reservations)
 
+#Permet à l'utilisateur de supprimer sa réservation.
 @app.route('/delete_reservation', methods= ['POST', 'GET'])
 def delete_reservation():
     if 'username' not in session and "is_admin" not in session:
@@ -239,6 +252,7 @@ def delete_reservation():
         print(message)
     return render_template('reservation/delete_reservation.html', message=message, reservation=reservation)
 
+#Permet à l'administrateur de voir le statut des réservations.
 @app.route('/statut')
 def statut():
     if "is_admin" not in session:
@@ -246,12 +260,13 @@ def statut():
     reservations = ReservationDao.afficher_statut_reservations()
     return render_template('reservation/statut.html',  reservations=reservations)
 
-
+#Permet de sortir de la session.
 @app.route("/logout")
 def logout():
     session.clear() # On vide la session
     return redirect(url_for('login'))
 
+#Permet à l'utilisateur de faire une réservation.
 @app.route('/reservations', methods=['POST', 'GET'])
 def reservations():
     if 'username' not in session and "is_admin" not in session:
@@ -272,7 +287,6 @@ def reservations():
             message="error"
             return render_template('reservation/reservations.html',message=message, reservation=None)
     
-
         elif id_evenement is None:
             message = "L'événement sélectionné n'existe pas."
         else:
@@ -288,9 +302,9 @@ def reservations():
             pass
         else:
             message= "Une erreur s'est produite lors de la réservation. Veuillez réessayer."
-   
     return render_template('reservation/reservations.html',message=message, reservation=reservation)
 
+#Permet à l'utilisateur de voir ses réservations.
 @app.route('/historique')
 def historique():
     if 'username' not in session and "is_admin" not in session:
@@ -299,6 +313,7 @@ def historique():
     reservations = ReservationDao.filtrer_reservations_id_user(id_user)    
     return render_template('reservation/historique.html', reservations=reservations)
 
+#Permet de confirmer une réservation.
 @app.route('/confirmation')
 def confirmation():
     id_reservation= session['id_reservation']
@@ -310,6 +325,7 @@ def confirmation():
     else:
         return render_template('confirmation.html',message=message, evenement=evenement)
 
+#Permet à l'administrateur de voir la liste des utilisateurs.
 @app.route('/users')
 def users():
     if 'username' not in session:
@@ -321,19 +337,19 @@ def users():
     message, users = UserDao.list_all()
     return render_template('user/liste_users.html', message= message, users= users)
 
+#Ajoute un nouvel utilisateur à la base de données.
 @app.route('/add-users', methods= ['POST', 'GET'])
 def add_user():
     if 'username' not in session:
         return redirect(url_for('login'))
-    req = request.form
     message =None
     user= None
 
     if request.method == "POST":
-        nom_complet = req ['nom_complet']
-        username = req ['username']
-        password = req ['password']
-        type = req ['type']
+        nom_complet = request.form ['nom_complet']
+        username = request.form ['username']
+        password = request.form ['password']
+        type = request.form ['type']
 
         password = password.encode('utf-8')
         hashed_password = bcrypt.hashpw(password, salt)
@@ -346,7 +362,7 @@ def add_user():
         print(message)
     return render_template('user/add_users.html', message= message, user=user)
 
-
+#Permet à l'utilisateur de faire un paiement suite à la réservation.
 @app.route('/paiement', methods=['POST','GET'])
 def paiement():
     if 'username' not in session and "is_admin" not in session:
@@ -356,7 +372,6 @@ def paiement():
     montant = None
     evenement=None
     paiement=None
-    
     
     if id_evenement:
         evenement = EvenementDao.recuperer_evenement_par_id(id_evenement)
@@ -380,9 +395,10 @@ def paiement():
             message = PaiementDao.ajouter_paiement(paiement)
             if message=='success':
                 return redirect(url_for('confirmation'))
-            
+                   
     return render_template('paiement.html', message=message, paiement=paiement, montant=montant,reservation=reservation)
 
+#Permet à l'utilisateur d'envoiyer un email s'il a des question en rencontre des problèmes.
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
