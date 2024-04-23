@@ -144,35 +144,45 @@ def modify_event():
         return redirect(url_for('login'))
     message=None
     evenement=None
+    id_evenement = request.args.get('id_evenement')
+
+    if id_evenement:
+        evenement = EvenementDao.recuperer_evenement_par_id(id_evenement)
     
     if request.method == "POST":
-        id_evenement=request.form['id_evenement']
-        id_evenement=id_evenement,
-        nom= request.form['nom'],
-        date = request.form ['date'],
-        emplacement = request.form ['emplacement'],
+        nom= request.form['nom']
+        date = request.form ['date']
+        emplacement = request.form ['emplacement']
         total_seat= request.form ['total_seat']
         prix = request.form['prix']  
+        
        
         if nom=="" or date=="" or emplacement=="" or total_seat=="" or prix=="":
             message="error"
-        else:
+            return render_template('reservation/modify_event.html',message=message, reservation=None)
+        id_evenement = EvenementDao.get_evenement_id_by_name(nom)
+        if id_evenement:
             nouveau_evenement=Evenement(
-                id_evenement=id_evenement,
-                nom=nom,
-                date=date,
-                emplacement=emplacement,
-                total_seat=total_seat,
-                prix=prix
+            id_evenement=id_evenement,
+            nom=nom,
+            date=date,
+            emplacement=emplacement,
+            total_seat=total_seat,
+            prix=prix
             )
             message =EvenementDao.modifier_evenement(id_evenement,nouveau_evenement)    
             if message=='success':
                 message="Modification successful"
-    else:
-        id_evenement= request.args.get('id_evenement')
-        evenement = EvenementDao.recuperer_evenement_par_id(id_evenement)
+                session['id_evenement']=id_evenement
+                return redirect(url_for('evenement', id_evenement=id_evenement))
+            else:
+                message = "Failed to modify event."
+        else:
+            message = "Event not found."
+    
     return render_template('event/modify_event.html', message=message, evenement=evenement)
 
+   
 
 @app.route('/delete_event', methods= ['POST', 'GET'])
 def delete_event():
@@ -262,7 +272,6 @@ def reservations():
             message = "L'événement sélectionné n'existe pas."
         else:
             statut = ReservationStatut.EN_ATTENTE.value 
-            print("en attente", statut)
             reservation = Reservation(nom, date, place,id_evenement,id_user,statut)
             (success, message, id_reservation) = ReservationDao.reserver_place(reservation)
             
@@ -276,7 +285,6 @@ def reservations():
             message= "Une erreur s'est produite lors de la réservation. Veuillez réessayer."
    
     return render_template('reservation/reservations.html',message=message, reservation=reservation)
-
 
 @app.route('/historique')
 def historique():
@@ -344,6 +352,7 @@ def paiement():
     evenement=None
     paiement=None
     
+    
     if id_evenement:
         evenement = EvenementDao.recuperer_evenement_par_id(id_evenement)
         if evenement:
@@ -360,14 +369,17 @@ def paiement():
             message="error"
 
         else:
+            statut= ReservationStatut.CONFIRME.value
+            reservation = Reservation(statut)
             paiement= Paiement(montant,mode_paiement,numero_carte,date_expiration,cvv)
             message = PaiementDao.ajouter_paiement(paiement)
             if message=='success':
                 return redirect(url_for('confirmation'))
             
-    return render_template('paiement.html', message=message, paiement=paiement, montant=montant)
+    return render_template('paiement.html', message=message, paiement=paiement, montant=montant,reservation=reservation)
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 
-
-if __name__ == "__main__":
-    app.run(debug=True)
