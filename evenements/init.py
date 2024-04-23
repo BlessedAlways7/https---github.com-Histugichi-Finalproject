@@ -13,8 +13,13 @@ message = EvenementDao.supprimer_evenement('3567627')
 print(message)
 
 """
-(message,event_info)= EvenementDao.get_event_info_with_reserved_places()
-print(message,event_info)
+#(message,event_info)= EvenementDao.get_event_info_with_reserved_places()
+#print(message,event_info)
+
+evenement=EvenementDao.get_evenement_id_by_name('Bingo')
+print(evenement)
+
+
 
 
 

@@ -67,12 +67,26 @@ class EvenementDao:
             EvenementDao.cursor.execute(sql,(id_evenement,))
             evenement = EvenementDao.cursor.fetchone()
             if evenement:
-                return Evenement(evenement)
+                return (evenement)
             else:
                 return None
         except Exception as error:
-            print("Erreur lors de la récupération de l'événement par ID")
+            print(f"Erreur lors de la récupération de l'événement par ID", error)
         return None
+    
+    @classmethod
+    def get_evenement_id_by_name(cls, nom):
+        sql = "SELECT id_evenement FROM evenement WHERE nom = %s"
+        try:
+            EvenementDao.cursor.execute(sql, (nom,))
+            evenement = EvenementDao.cursor.fetchone()
+            if evenement:
+                return evenement[0]  
+            else:
+                return None
+        except Exception as error:
+            print("Error retrieving event ID by name")
+            return None
     
 
     @classmethod

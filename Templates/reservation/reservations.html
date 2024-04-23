@@ -15,9 +15,11 @@
     
     {% elif message=='success' %}
      <p class="alert alert-success"> La réservation pour {{reservation.nom}} avec identification {{reservation.id_reservation}} a été réserver!</p>
-    {% endif %}
+    
+     {% endif %}
+    
 
-<form action="{{url_for('reservations', id_evenement=id_evenement, id_user=id_user)}}" method="post" class = "container">
+<form action="{{url_for('reservations')}}" method="post" class = "container">
     <div class="form-floating mb-3">
         <input name = 'nom' type="text" class="form-control" id="Nom" placeholder="">
         <label for="nom">Nom de l'activité</label>

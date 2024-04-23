@@ -1,11 +1,10 @@
 class Reservation:
-    def __init__(self,nom,date, place,id_evenement,id_user,id_reservation, statut) -> None:
+    def __init__(self,nom,date, place,id_evenement,id_user, statut) -> None:
         self.__nom = nom
         self.__date = date
         self.__place = place
         self.__id_evenement= id_evenement
         self.__id_user= id_user
-        self.__id_reservation = id_reservation
         self.__statut= statut
         
     @property
@@ -47,14 +46,6 @@ class Reservation:
     @id_user.setter
     def id_user(self, value):
         self.__id_user = value
-
-    @property
-    def id_reservation(self):
-        return self.__id_reservation
-
-    @id_reservation.setter
-    def id_reservation(self, value):
-        self.__id_reservation = value
 
     @property
     def statut(self):

@@ -28,18 +28,21 @@ class ReservationDao:
     
     @classmethod
     def reserver_place(cls,reservation:Reservation):
-        sql = "INSERT INTO reservation (nom, date, place,id_evenement,id_user,id_reservation,statut) VALUES (%s,%s, %s, %s,%s,%s,%s)"
-        params = (reservation.nom, reservation.date,reservation.place, reservation.id_evenement,reservation.id_user,reservation.id_reservation, reservation.statut)   
+        sql = "INSERT INTO reservation (nom, date, place,id_evenement,id_user,statut) VALUES (%s,%s, %s,%s,%s,%s)"
+        params = (reservation.nom, reservation.date,reservation.place, reservation.id_evenement,reservation.id_user, reservation.statut)   
         try:
             ReservationDao.cursor.execute(sql, params)
             ReservationDao.connexion.commit()   
             success=True 
             message = 'success'
+            # Récupération du dernier ID inséré
+            last_id = ReservationDao.cursor.lastrowid
         except Exception as error:
+            print(error)
             success=False
             message = 'failure'
             print("Error lors de l'insertion de la réservation")
-        return success,message
+        return (success,message,last_id)
         
 
     @classmethod
