@@ -138,6 +138,11 @@ def add_event():
         print(message)
     return render_template('event/add_event.html', message=message, evenement=evenement)
 
+@app.route('/evenement_admin')
+def evenement_admin():
+    message, evenements=EvenementDao.get_all()
+    return render_template('admin/evenement_admin.html', message=message, evenements=evenements)
+
 @app.route('/modify_event', methods= ['POST', 'GET'])
 def modify_event():
     if "is_admin" not in session:
@@ -174,7 +179,7 @@ def modify_event():
             if message=='success':
                 message="Modification successful"
                 session['id_evenement']=id_evenement
-                return redirect(url_for('evenement', id_evenement=id_evenement))
+                return redirect(url_for('evenement_admin', id_evenement=id_evenement))
             else:
                 message = "Failed to modify event."
         else:
