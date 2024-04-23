@@ -90,7 +90,7 @@ class ReservationDao:
             ReservationDao.cursor.execute(sql,(id_user,))
             reservations = ReservationDao.cursor.fetchall()
             if reservations:
-                return reservations, f"La personne {id_user} a réservé la place."
+                return reservations, f"Voici les réservations de l'utilisateur: {id_user}."
             else:
                 return None, f" Malheureusement, aucune reservation à été fait pour {id_user}!"
         except Exception as error:

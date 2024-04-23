@@ -294,10 +294,10 @@ def reservations():
 @app.route('/historique')
 def historique():
     if 'username' not in session and "is_admin" not in session:
-        return redirect(url_for('login'))
-    id_user=request.args.get('id_user')
-    message, reservations = ReservationDao.filtrer_reservations_id_user(id_user)
-    return render_template('reservation/historique.html', message=message, reservations=reservations)
+        return redirect(url_for('login'))   
+    id_user = session.get('id_user')    
+    reservations = ReservationDao.filtrer_reservations_id_user(id_user)    
+    return render_template('reservation/historique.html', reservations=reservations)
 
 @app.route('/confirmation')
 def confirmation():
