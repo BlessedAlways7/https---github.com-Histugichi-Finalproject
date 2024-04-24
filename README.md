@@ -21,7 +21,8 @@ Réservations : Système de réservation des activitées avec la gestion des sta
 Technologies Utilisées
 python3 flask sql jinja2 mysql ,bootstrap
 
-Pour les difficultées, on a eu beaucoup de problème à joindre la DB avec notre code pour que le tout s'affiche correctement.Ensuite,pour afficher les places on réussisait a faire apparaître des chiffres et des id rentrer manuellement et non connecté avec la database.Pour suivre,le hashage des mot de passes des utilisateurs, on a perdu beaucoup de temps a essayé et dû au manque de formation à se niveau et au exigence demandé qui son très haute sur plusieurs niveau et non que sur le mot de passe il a fallu se débrouillé comme on a pu, on a apprécié le coup de main donné par le professeur.
+Difficultées:
+On a eu beaucoup de problème à joindre la DB avec notre code pour que le tout s'affiche correctement.Ensuite,pour afficher les places on réussisait a faire apparaître des chiffres et des id rentrer manuellement et non connecté avec la database.Pour suivre,le hashage des mot de passes des utilisateurs, on a perdu beaucoup de temps a essayé et dû au manque de formation à se niveau et au exigence demandé qui son très haute sur plusieurs niveau et non que sur le mot de passe il a fallu se débrouillé comme on a pu, on a apprécié le coup de main donné par le professeur.
 
 Contributeurs
 Émilie Kusters  et Max Létourneau
