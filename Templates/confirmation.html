@@ -9,7 +9,8 @@
 
 {% if session and user and evenement %}
   <p>Merci, {{session['nom_complet'] }}, votre réservation pour l'activité {{ evenement[0] }} le {{ evenement[1] }} a été confirmée.</p>
-  <p>Un email de confirmation a été envoyé à {{session['email'] }}.</p>
+  <p>Votre numéro de réservation est : {{ session['id_reservation']}}.</p>
+  <p>Un email de confirmation a été envoyé à {{session['email']}}.</p>
 {% else %}
   <p>Erreur lors de la confirmation de la réservation.</p>
   {% if not user %}

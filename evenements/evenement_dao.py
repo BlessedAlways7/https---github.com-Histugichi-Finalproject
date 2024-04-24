@@ -93,6 +93,18 @@ class EvenementDao:
         except Exception as error:
             print("Error retrieving event ID by name")
             return None
+        
+    @classmethod
+    def get_all_id(cls):
+        sql = "SELECT id_evenement FROM evenement"
+        try:
+            EvenementDao.cursor.execute(sql)
+            evenements = EvenementDao.cursor.fetchall()
+            message = 'success'
+        except Exception as error:
+            evenements = []
+            message ="erreur"
+        return (message, evenements)
     
 # Méthode pour récupérer les information de l'évènement avec sa place réservée.
     @classmethod

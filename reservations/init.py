@@ -13,9 +13,8 @@ message = EvenementDao.supprimer_evenement('3567627')
 print(message)
 """
 
-message=ReservationDao.annuler_reservation('LUGE545','7','45268')
-print (message)
-
+reservations=ReservationDao.places_reservees('CROCHET1235')
+print(reservations)
 
 
 

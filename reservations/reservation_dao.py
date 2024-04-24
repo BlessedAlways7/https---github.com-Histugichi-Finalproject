@@ -1,6 +1,7 @@
 import database
 #from reservation import Reservation
 #from statut import ReservationStatut
+
 from reservations.statut import ReservationStatut
 from reservations.reservation import Reservation
 from evenements.evenement_dao import EvenementDao
@@ -60,7 +61,7 @@ class ReservationDao:
             message = 'failure'
         return message
     
-    # Méthode pour calculer le nombre de réservations.
+    # Méthode pour retourner les places reserver selon id de l'evenement.
     @classmethod
     def places_reservees(cls,id_evenement):
         sql = "SELECT SUM(place) FROM reservation WHERE id_evenement = %s" 
@@ -125,6 +126,20 @@ class ReservationDao:
         except Exception as error:
             message='error'
         return message
+    
+    # Méthode pour mise a jour du statut de la reservation.
+    @classmethod
+    def update_statut_reservation(cls,id_reservation, nouveau_statut):
+        sql=  "UPDATE reservation SET statut = %s WHERE id_reservation = %s"
+        try:
+            ReservationDao.cursor.execute(sql,(nouveau_statut,id_reservation))
+            ReservationDao.connexion.commit()
+            return 'success'
+        except Exception as error:
+            return ('error')
+            
+            
+
         
         
            

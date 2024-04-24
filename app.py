@@ -108,23 +108,22 @@ def evenement():
 #Permet d'afficher les places (total,réservées, disponibles) selon l'évènement.
 @app.route('/places',methods= ['POST','GET'])
 def places():
-    message=None
+
     event_info=None
-    if request.method=="GET":
+    id_evenement= EvenementDao.get_all_id()
+    if request.method == "GET":
         nom = request.args.get('nom')
         id_evenement = request.args.get('id_evenement')
-
-    if id_evenement and nom:
-        event_info=EvenementDao.get_event_info_with_reserved_places(id_evenement, nom)
-        if event_info:
-            nom,id_evenement,total_seat,place,places_disponibles=event_info
-            return render_template('places.html', nom=nom, id_evenement=id_evenement, 
-                total_seat=total_seat, place=place, places_disponibles=places_disponibles)
-        else:
-            message = 'Event information not found.' 
-    else:
-        message = 'ID and name of the event are required.'
-    return render_template('places.html',message=message,event_info=event_info)
+        
+        if id_evenement and nom:
+            event_info=EvenementDao.get_event_info_with_reserved_places(id_evenement, nom)
+            if event_info:
+                total_seat=int(event_info[5])
+                return render_template('places.html', event_info=event_info, total_seat=total_seat)
+            else:
+                return 'Event information not found.' 
+   
+    return render_template('places.html',event_info=event_info)
 
 #Permet à l'administrateur d'ajouter un évènement.
 @app.route('/add_event', methods= ['POST', 'GET'])
@@ -318,12 +317,15 @@ def historique():
 def confirmation():
     id_reservation= session['id_reservation']
     id_evenement=session['id_evenement']
+    nom_complet=session['nom_complet']
+    email= session['email']
     evenement=EvenementDao.recuperer_evenement_par_id(id_evenement)
     message=ReservationDao.confirmer_reservation(id_reservation)
     if message== 'success':
         return redirect(url_for('reservation'))
     else:
-        return render_template('confirmation.html',message=message, evenement=evenement)
+        return render_template('confirmation.html',message=message, evenement=evenement, nom_complet=nom_complet,
+             email=email,id_evenement=id_evenement, id_reservation=id_reservation)
 
 #Permet à l'administrateur de voir la liste des utilisateurs.
 @app.route('/users')
@@ -372,6 +374,7 @@ def paiement():
     montant = None
     evenement=None
     paiement=None
+    reservation=None
     
     if id_evenement:
         evenement = EvenementDao.recuperer_evenement_par_id(id_evenement)
@@ -389,8 +392,9 @@ def paiement():
             message="error"
 
         else:
-            statut= ReservationStatut.CONFIRME.value
-            reservation = Reservation(statut)
+            id_reservation = session.get('id_reservation')
+            nouveau_statut= ReservationStatut.CONFIRME.value
+            ReservationDao.update_statut_reservation(id_reservation, nouveau_statut)
             paiement= Paiement(montant,mode_paiement,numero_carte,date_expiration,cvv)
             message = PaiementDao.ajouter_paiement(paiement)
             if message=='success':
