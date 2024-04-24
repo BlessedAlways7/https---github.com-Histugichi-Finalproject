@@ -111,6 +111,7 @@ def places():
 
     event_info=None
     id_evenement= EvenementDao.get_all_id()
+
     if request.method == "GET":
         nom = request.args.get('nom')
         id_evenement = request.args.get('id_evenement')

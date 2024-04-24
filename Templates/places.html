@@ -20,22 +20,22 @@
 
     </thead>
     <tbody>
-        {% if event_info is not none %}
-        {% for event_info in event_infos %}
+        {% if event_infos%}
+            {% for event_info in event_infos %}
 
-        <tr>
-            <td>{{event_info[0]}}</td>
-            <td>{{event_info[1]}}</td>
-            <td>{{event_info[2]}}</td>
-            <td>{{event_info[3]}}</td>
-            <td>{{event_info[4]}}</td>
+                <tr>
+                    <td>{{event_info[0]}}</td>
+                    <td>{{event_info[1]}}</td>
+                    <td>{{event_info[2]}}</td>
+                    <td>{{event_info[3]}}</td>
+                    <td>{{event_info[4]}}</td>
 
-        </tr>
-        {%endfor %}
+                </tr>
+            {%endfor %}
         {% else %}
-        <tr>
-            <td colspan="4">Aucune information sur les évènements disponible.</td>
-        </tr>
+                <tr>
+                    <td colspan="4">Aucune information sur les évènements disponible.</td>
+                </tr>
         {% endif %}
 
     </tbody>
