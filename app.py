@@ -319,12 +319,12 @@ def confirmation():
     id_evenement=session['id_evenement']
     nom_complet=session['nom_complet']
     email= session['email']
+
     evenement=EvenementDao.recuperer_evenement_par_id(id_evenement)
-    message=ReservationDao.confirmer_reservation(id_reservation)
-    if message== 'success':
-        return redirect(url_for('reservation'))
-    else:
-        return render_template('confirmation.html',message=message, evenement=evenement, nom_complet=nom_complet,
+    success=ReservationDao.confirmer_reservation(id_reservation)
+    message='success' if success else 'error'
+
+    return render_template('confirmation.html',message=message, evenement=evenement, nom_complet=nom_complet,
              email=email,id_evenement=id_evenement, id_reservation=id_reservation)
 
 #Permet à l'administrateur de voir la liste des utilisateurs.
@@ -381,7 +381,7 @@ def paiement():
         if evenement:
             montant = evenement[4]
 
-    print('prix',id_evenement)
+    
     if request.method == 'POST':
         mode_paiement= request.form['mode_paiement']
         numero_carte=request.form['numero_carte']

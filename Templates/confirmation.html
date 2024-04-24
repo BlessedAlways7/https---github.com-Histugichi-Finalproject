@@ -7,17 +7,18 @@
 <h1>Confirmation de réservation</h1>
 
 
-{% if session and user and evenement %}
+{% if message=='success' %}
   <p>Merci, {{session['nom_complet'] }}, votre réservation pour l'activité {{ evenement[0] }} le {{ evenement[1] }} a été confirmée.</p>
   <p>Votre numéro de réservation est : {{ session['id_reservation']}}.</p>
   <p>Un email de confirmation a été envoyé à {{session['email']}}.</p>
-{% else %}
-  <p>Erreur lors de la confirmation de la réservation.</p>
-  {% if not user %}
-    <p>Impossible de trouver les détails de l'utilisateur.</p>
-  {% elif not evenement %}
-    <p>L'événement spécifié n'existe pas.</p>
-  {% endif %} 
+  {% else %}
+      <p>Erreur lors de la confirmation de la réservation.</p>
+      {% if not nom_complet %}
+        <p>Impossible de trouver les détails de l'utilisateur.</p>
+  {% endif %}
+  {% if not evenement %}
+      <p>L'événement spécifié n'existe pas.</p>
+  {% endif %}
 {% endif %}
 
 {% endblock %}
