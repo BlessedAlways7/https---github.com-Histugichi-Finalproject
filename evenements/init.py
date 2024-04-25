@@ -16,12 +16,14 @@ print(message)
 #(message,event_info)= EvenementDao.get_event_info_with_reserved_places()
 #print(message,event_info)
 
-event_info=EvenementDao.get_event_info_with_reserved_places('BINGO2025', 'Bingo')
-print(event_info)
-print(event_info[3])
+#event_info=EvenementDao.get_event_info_with_reserved_places('BINGO2025', 'Bingo')
+#print(event_info)
+#print(event_info[3])
 
-id_evenement=EvenementDao.get_all_id()
-print(id_evenement)
+
+
+event_info= EvenementDao.get_event_info_with_reserved_places()
+print(event_info)
 
 
 

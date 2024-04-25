@@ -94,42 +94,29 @@ class EvenementDao:
             print("Error retrieving event ID by name")
             return None
         
-    @classmethod
-    def get_all_id(cls):
-        sql = "SELECT id_evenement FROM evenement"
-        try:
-            EvenementDao.cursor.execute(sql)
-            evenements = EvenementDao.cursor.fetchall()
-            message = 'success'
-        except Exception as error:
-            evenements = []
-            message ="erreur"
-        return (message, evenements)
     
 # Méthode pour récupérer les information de l'évènement avec sa place réservée.
     @classmethod
-    def get_event_info_with_reserved_places(cls,id_evenement,nom):
+    def get_event_info_with_reserved_places(cls):
         sql = """
                 SELECT 
-                    e.nom,
-                    e.id_evenement, 
-                    e.total_seat,
-                    (e.total_seat - COALESCE(SUM(r.place), 0)) AS places_disponibles
+                    evenement.nom, 
+                    evenement.id_evenement,
+                    evenement.total_seat- COALESCE(COUNT(reservation.place), 0) AS available_places,
+                    reservation.place
                 FROM 
-                    evenement e
+                    evenement
                 LEFT JOIN 
-                    reservation r ON e.id_evenement = r.id_evenement AND e.nom= r.nom
-                WHERE 
-                    e.id_evenement = %s AND e.nom = %s
+                    reservation ON evenement.id_evenement= reservation.id_evenement
                 GROUP BY 
-                    e.id_evenement, e.total_seat;
+                        evenement.nom, evenement.id_evenement, evenement.total_seat;
               """
         try:
-            EvenementDao.cursor.execute(sql,(id_evenement,nom))
-            event_info_with_places = EvenementDao.cursor.fetchone()
-            return event_info_with_places
+            EvenementDao.cursor.execute(sql)
+            event_info = EvenementDao.cursor.fetchall()
+            return event_info
         except Exception as error:
-            print="error"
-            return None
+             print("Error occurred while fetching event and reservation information:")
+        return None
         
     

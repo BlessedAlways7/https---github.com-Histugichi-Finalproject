@@ -108,23 +108,12 @@ def evenement():
 #Permet d'afficher les places (total,réservées, disponibles) selon l'évènement.
 @app.route('/places',methods= ['POST','GET'])
 def places():
-
-    event_info=None
-    id_evenement= EvenementDao.get_all_id()
-
-    if request.method == "GET":
-        nom = request.args.get('nom')
-        id_evenement = request.args.get('id_evenement')
-        
-        if id_evenement and nom:
-            event_info=EvenementDao.get_event_info_with_reserved_places(id_evenement, nom)
-            if event_info:
-                total_seat=int(event_info[5])
-                return render_template('places.html', event_info=event_info, total_seat=total_seat)
-            else:
-                return 'Event information not found.' 
-   
-    return render_template('places.html',event_info=event_info)
+    event_info=EvenementDao.get_event_info_with_reserved_places()
+    if event_info:
+        return render_template('places.html', event_info_lists=event_info)
+    else:
+        return 'Event information not found.' 
+    
 
 #Permet à l'administrateur d'ajouter un évènement.
 @app.route('/add_event', methods= ['POST', 'GET'])
@@ -155,6 +144,15 @@ def add_event():
 def evenement_admin():
     message, evenements=EvenementDao.get_all()
     return render_template('admin/evenement_admin.html', message=message, evenements=evenements)
+
+#Permet d'afficher les places (total,réservées, disponibles) selon l'évènement pour l'administrateur.
+@app.route('/places_admin',methods= ['POST','GET'])
+def places_admin():
+    event_info=EvenementDao.get_event_info_with_reserved_places()
+    if event_info:
+        return render_template('admin/places_admin.html', event_info_lists=event_info)
+    else:
+        return 'Event information not found.' 
 
 #Permet à l'administrateur de modifier les information de l'évènement selon l'id de l'évènement.
 @app.route('/modify_event', methods= ['POST', 'GET'])
@@ -200,6 +198,7 @@ def modify_event():
             message = "Event not found."
     return render_template('event/modify_event.html', message=message, evenement=evenement)
 
+
 #Permet à l'administrateur de supprimer un évènement.
 @app.route('/delete_event', methods= ['POST', 'GET'])
 def delete_event():
@@ -224,6 +223,7 @@ def delete_event():
         print(message)
     return render_template('event/delete_event.html', message=message, evenement=evenement)
 
+
 #Permet à l'administrateur d'afficher les réservations.
 @app.route('/liste_reservation')
 def liste_reservation():
@@ -231,6 +231,7 @@ def liste_reservation():
         return redirect(url_for('login'))
     message, reservations=ReservationDao.get_all()
     return render_template('reservation/liste_reservation.html', message=message, reservations=reservations)
+
 
 #Permet à l'utilisateur de supprimer sa réservation.
 @app.route('/delete_reservation', methods= ['POST', 'GET'])
@@ -252,6 +253,7 @@ def delete_reservation():
         print(message)
     return render_template('reservation/delete_reservation.html', message=message, reservation=reservation)
 
+
 #Permet à l'administrateur de voir le statut des réservations.
 @app.route('/statut')
 def statut():
@@ -260,11 +262,13 @@ def statut():
     reservations = ReservationDao.afficher_statut_reservations()
     return render_template('reservation/statut.html',  reservations=reservations)
 
+
 #Permet de sortir de la session.
 @app.route("/logout")
 def logout():
     session.clear() # On vide la session
     return redirect(url_for('login'))
+
 
 #Permet à l'utilisateur de faire une réservation.
 @app.route('/reservations', methods=['POST', 'GET'])
@@ -304,6 +308,7 @@ def reservations():
             message= "Une erreur s'est produite lors de la réservation. Veuillez réessayer."
     return render_template('reservation/reservations.html',message=message, reservation=reservation)
 
+
 #Permet à l'utilisateur de voir ses réservations.
 @app.route('/historique')
 def historique():
@@ -312,6 +317,7 @@ def historique():
     id_user = session.get('id_user')    
     reservations = ReservationDao.filtrer_reservations_id_user(id_user)    
     return render_template('reservation/historique.html', reservations=reservations)
+
 
 #Permet de confirmer une réservation.
 @app.route('/confirmation')
@@ -328,6 +334,7 @@ def confirmation():
     return render_template('confirmation.html',message=message, evenement=evenement, nom_complet=nom_complet,
              email=email,id_evenement=id_evenement, id_reservation=id_reservation)
 
+
 #Permet à l'administrateur de voir la liste des utilisateurs.
 @app.route('/users')
 def users():
@@ -339,6 +346,7 @@ def users():
     users= None  
     message, users = UserDao.list_all()
     return render_template('user/liste_users.html', message= message, users= users)
+
 
 #Ajoute un nouvel utilisateur à la base de données.
 @app.route('/add-users', methods= ['POST', 'GET'])
@@ -364,6 +372,7 @@ def add_user():
             message = UserDao.create(user)
         print(message)
     return render_template('user/add_users.html', message= message, user=user)
+
 
 #Permet à l'utilisateur de faire un paiement suite à la réservation.
 @app.route('/paiement', methods=['POST','GET'])
@@ -402,6 +411,7 @@ def paiement():
                 return redirect(url_for('confirmation'))
                    
     return render_template('paiement.html', message=message, paiement=paiement, montant=montant,reservation=reservation)
+
 
 #Permet à l'utilisateur d'envoiyer un email s'il a des question en rencontre des problèmes.
 @app.route('/contact')

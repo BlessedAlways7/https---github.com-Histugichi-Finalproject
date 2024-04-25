@@ -8,7 +8,6 @@ class Evenement:
         self.__prix = prix
         self.__id_evenement= id_evenement
     
-
     @property
     def nom(self):
         return self.__nom
