@@ -79,7 +79,7 @@ Quand un utilisateur s'enregistre , son mot de passe devient hasher se qui fait 
 - Fonction BCrypt
 - .gitignore
 
-   Technologies utilisées:
+  Technologies utilisées:
   
 python3, flask, sql, jinja2, mysql ,bootstrap
 
