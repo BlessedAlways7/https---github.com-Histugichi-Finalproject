@@ -1,3 +1,43 @@
+Objectifs du Projet :
+  
+● Concevoir une application web permettant aux usagers de réserver des places pour des événements.
+
+Fonctionnalités principales de l'application :
+
+● Système de réservation en ligne pour différents types d'événements.
+● Interface conviviale pour les utilisateurs, avec des fonctionnalités de recherche, de sélection de places et de paiement sécurisé.
+● Gestion des réservations côté administrateur, avec la possibilité d'ajouter, de modifier ou d'annuler des événements, ainsi que de visualiser les données sur les réservations.
+
+Consignes du Projet :
+Gestion des Utilisateurs :
+● Mise en place d'un système d'authentification pour les utilisateurs.
+● Création et gestion de profils utilisateurs avec des informations personnelles.
+
+Gestion des Événements :
+● Ajout, modification et suppression d'événements.
+● Attribution de catégories ou de tags à chaque événement.
+● Affichage d'une liste d'événements avec des détails pertinents.
+
+Système de Réservation :
+● Mise en place d'un système de réservation de billets pour les événements.
+● Possibilité d'annuler une réservation si nécessaire.
+● Affichage du statut des réservations (confirmé, en attente, annulé).
+
+Interface Utilisateur Intuitive :
+● Conception d'une interface utilisateur conviviale pour la navigation.
+● Utilisation de technologies frontend modernes pour une expérience utilisateur optimale.
+
+Gestion de Base de Données :
+● Création d'une base de données pour stocker les informations sur les
+utilisateurs, les événements, et les réservations.
+● Utilisation de requêtes SQL pour récupérer, modifier ou supprimer des données.
+
+Sécurité :
+● Implémentation de pratiques de sécurité pour protéger les données
+utilisateur.
+● Validation des formulaires et prévention des attaques courantes.
+
+
 Instructions étape par étape pour installer et configurer notre projet!
 
 L'installation : On a install flask avec pip install flask , ainsi que l'environnement. 
