@@ -9,21 +9,26 @@ Fonctionnalités principales de l'application :
 ● Gestion des réservations côté administrateur, avec la possibilité d'ajouter, de modifier ou d'annuler des événements, ainsi que de visualiser les données sur les réservations.
 
 Consignes du Projet :
+
 Gestion des Utilisateurs :
+
 ● Mise en place d'un système d'authentification pour les utilisateurs.
 ● Création et gestion de profils utilisateurs avec des informations personnelles.
 
 Gestion des Événements :
+
 ● Ajout, modification et suppression d'événements.
 ● Attribution de catégories ou de tags à chaque événement.
 ● Affichage d'une liste d'événements avec des détails pertinents.
 
 Système de Réservation :
+
 ● Mise en place d'un système de réservation de billets pour les événements.
 ● Possibilité d'annuler une réservation si nécessaire.
 ● Affichage du statut des réservations (confirmé, en attente, annulé).
 
 Interface Utilisateur Intuitive :
+
 ● Conception d'une interface utilisateur conviviale pour la navigation.
 ● Utilisation de technologies frontend modernes pour une expérience utilisateur optimale.
 
